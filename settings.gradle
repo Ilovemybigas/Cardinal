@@ -1,0 +1,5 @@
+rootProject.name = 'Cardinal'
+
+include 'cardinal-api'
+include 'cardinal-paper'
+include 'cardinal-paper'

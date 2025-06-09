@@ -1,0 +1,28 @@
+name: Cardinal
+version: "${version}"
+main: net.mineabyss.core.Cardinal
+description: Official core for MineAbyss
+api-version: '1.21.4'
+dependencies:
+  bootstrap:
+  # Let's say that RegistryPlugin registers some data that your plugin needs to use
+  # We don't need this during runtime, so it's not required in the server section.
+  # However, can be added to both if needed
+  #RegistryPlugin:
+  #load: BEFORE
+  #required: true
+  #join-classpath: true # Defaults to true
+  server:
+    MineAbyssLib:
+      load: BEFORE
+      required: true
+    PlaceholderAPI:
+      # Load order is relative to the dependency. So here PlaceholderAPI loads before our plugin.
+      load: BEFORE
+      required: false
+  # Add a required "RequiredPlugin" dependency, which will load AFTER your plugin.
+  #RequiredPlugin:
+  #load: AFTER
+  #required: true
+  # This means that your plugin will not have access to their classpath
+  #join-classpath: false
