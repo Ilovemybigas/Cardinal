@@ -1,8 +1,10 @@
 package net.mineabyss.core.commands.punishments;
 
 import com.mineabyss.lib.commands.annotations.Command;
+import com.mineabyss.lib.commands.annotations.Description;
 import com.mineabyss.lib.commands.annotations.Named;
 import com.mineabyss.lib.commands.annotations.Optional;
+import com.mineabyss.lib.commands.annotations.Permission;
 import com.mineabyss.lib.commands.annotations.Switch;
 import com.mineabyss.lib.commands.annotations.Usage;
 import net.mineabyss.cardinal.api.punishments.Punishment;
@@ -19,6 +21,8 @@ import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
 @Command("mute")
+@Permission(CardinalPermissions.MUTE_COMMAND_PERMISSION)
+@Description("Mutes a player on the server.")
 public class MuteCommand {
 
     @Usage
@@ -58,7 +62,7 @@ public class MuteCommand {
 
                     }else {
                         return Cardinal.getInstance().getPunishmentManager()
-                                .applyPunishment(StandardPunishmentType.BAN, issuer, PunishmentTargetFactory.playerTarget(offlinePlayer), duration, reason)
+                                .applyPunishment(StandardPunishmentType.MUTE, issuer, PunishmentTargetFactory.playerTarget(offlinePlayer), duration, reason)
                                 .map((p)-> (Punishment<?>)p)
                                 .onSuccess((punishment)-> {
                                     //kick if online

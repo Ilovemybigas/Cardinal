@@ -2,20 +2,26 @@ package net.mineabyss.cardinal.api.punishments;
 
 public enum StandardPunishmentType implements PunishmentType {
 
-    BAN("ban"),
-    MUTE("mute"),
-    KICK("kick"),
-    WARN("warn");
+    BAN("ban", true),
+    MUTE("mute", true),
+    KICK("kick", false),
+    WARN("warn", true);
 
     private final String id;
-
-    StandardPunishmentType(String id) {
+    private final boolean memoryWorthy;
+    StandardPunishmentType(String id, boolean memoryWorthy) {
         this.id = id;
+        this.memoryWorthy = memoryWorthy;
     }
 
     @Override
     public String id() {
         return id;
+    }
+
+    @Override
+    public boolean isMemoryWorthy() {
+        return memoryWorthy;
     }
 
 }

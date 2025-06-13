@@ -1,6 +1,5 @@
 package net.mineabyss.core.listener;
 
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.mineabyss.cardinal.api.punishments.Punishment;
 import net.mineabyss.cardinal.api.punishments.StandardPunishmentType;
@@ -11,7 +10,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,19 +32,19 @@ public class BanListener implements Listener {
             Punishment<?> punishment = activeBan.get();
             LoginResult result = processBanPunishment(punishment, uuid, playerName);
 
-            switch (result.getAction()) {
+            switch (result.action()) {
                 case ALLOW -> {
-                    if (result.getMessage() != null) {
-                        Cardinal.log("Player " + playerName + " ban expired/revoked: " + result.getMessage());
+                    if (result.message() != null) {
+                        Cardinal.log("Player " + playerName + " ban expired/revoked: " + result.message());
                     }
                     event.allow();
                 }
                 case DENY -> {
                     Cardinal.log("Player " + playerName + " login denied - Active ban: " + punishment.getId().getRepresentation());
-                    event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, result.getKickMessage());
+                    event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, result.kickMessage());
                 }
                 case ERROR -> {
-                    Cardinal.severe("Error processing ban for player " + playerName + ": " + result.getMessage());
+                    Cardinal.severe("Error processing ban for player " + playerName + ": " + result.message());
                     // Fail-safe: deny login on error to prevent bypassing bans
                     event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
                             Component.text("Authentication error. Please try again later."));
@@ -84,25 +82,15 @@ public class BanListener implements Listener {
         try {
             // Handle permanent bans
             if (punishment.isPermanent()) {
-                /*if (punishment.isRevoked()) {
-                    removePunishmentFromMemory(punishment);
-                    return LoginResult.allow("Permanent ban was revoked");
-                }*/
-                return LoginResult.deny(PunishmentMessageUtil.getKickMessage(punishment));
+                return LoginResult.deny(PunishmentMessageUtil.getBanKickMessage(punishment));
             }
 
             // Handle temporary bans
             if (punishment.hasExpired()) {
                 return handleExpiredBan(punishment, playerName);
             }
-
-            /*if (punishment.isRevoked()) {
-                removePunishmentFromMemory(punishment);
-                return LoginResult.allow("Temporary ban was revoked");
-            }*/
-
             // Ban is still active
-            return LoginResult.deny(PunishmentMessageUtil.getKickMessage(punishment));
+            return LoginResult.deny(PunishmentMessageUtil.getBanKickMessage(punishment));
 
         } catch (Exception e) {
             return LoginResult.error("Failed to process ban punishment: " + e.getMessage());
@@ -117,7 +105,7 @@ public class BanListener implements Listener {
             boolean revoked = Cardinal.getInstance().getPunishmentManager()
                     .revokePunishment(punishment.getId(),
                             PunishmentIssuerFactory.fromConsole(),
-                            "Automatically expired")
+                            "EXPIRED")
                     .join();
 
             if (revoked) {
@@ -144,20 +132,10 @@ public class BanListener implements Listener {
     /**
      * Result class for login processing
      */
-    @Getter
-    private static class LoginResult {
+    private record LoginResult(BanListener.LoginResult.Action action, String message, Component kickMessage) {
+
         public enum Action {
             ALLOW, DENY, ERROR
-        }
-
-        private final Action action;
-        private final String message;
-        private final Component kickMessage;
-
-        private LoginResult(Action action, String message, Component kickMessage) {
-            this.action = action;
-            this.message = message;
-            this.kickMessage = kickMessage;
         }
 
         public static LoginResult allow(String message) {

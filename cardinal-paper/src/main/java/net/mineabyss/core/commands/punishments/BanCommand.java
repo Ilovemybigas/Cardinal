@@ -26,7 +26,7 @@ import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
 @Command("ban")
-@Permission("cardinal.command.ban")
+@Permission(CardinalPermissions.BAN_COMMAND_PERMISSION)
 @Description("Bans a player from the server.")
 public class BanCommand {
 
@@ -74,7 +74,7 @@ public class BanCommand {
                                             if(player.isOnline()) {
                                                 //TODO make a punishment message manager, fetch (kick) messages for each punishment type
                                                 Tasks.runSync(()-> {
-                                                    ((Player)player).kick(PunishmentMessageUtil.getKickMessage(punishment),
+                                                    ((Player)player).kick(PunishmentMessageUtil.getBanKickMessage(punishment),
                                                             PlayerKickEvent.Cause.BANNED);
                                                 });
                                             }

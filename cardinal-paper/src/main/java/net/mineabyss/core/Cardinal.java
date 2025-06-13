@@ -9,6 +9,7 @@ import net.mineabyss.cardinal.api.CardinalAPI;
 import net.mineabyss.cardinal.api.punishments.PunishmentIssuer;
 import net.mineabyss.cardinal.api.punishments.PunishmentManager;
 import net.mineabyss.cardinal.api.storage.StorageException;
+import net.mineabyss.core.commands.punishments.KickCommand;
 import net.mineabyss.core.commands.punishments.UnMuteCommand;
 import net.mineabyss.core.commands.api.CardinalSource;
 import net.mineabyss.core.commands.api.DurationParameterType;
@@ -56,8 +57,8 @@ public final class Cardinal extends MineAbyssPlugin implements CardinalAPI {
 
     @Override
     protected void registerPluginCommands(@NotNull BukkitImperat bukkitImperat) {
-
         bukkitImperat.registerCommands(
+                new KickCommand(),
                 new BanCommand(),
                 new UnbanCommand(),
                 new MuteCommand(),

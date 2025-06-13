@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.mineabyss.cardinal.api.punishments.Punishment;
 import net.mineabyss.cardinal.api.punishments.StandardPunishmentType;
+import net.mineabyss.core.CardinalPermissions;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +17,7 @@ import java.time.Instant;
 @UtilityClass
 public final class PunishmentMessageUtil {
 
-    public static @NotNull String getKickMessageMiniMessage(Punishment<?> punishment) {
+    public static @NotNull String getBanKickMessageMiniMessage(Punishment<?> punishment) {
         if (punishment.getType() == StandardPunishmentType.WARN || punishment.getType() == StandardPunishmentType.MUTE) {
             return "";
         }
@@ -59,8 +60,8 @@ public final class PunishmentMessageUtil {
         return kickMsg.toString();
     }
 
-    public static @NotNull Component getKickMessage(Punishment<?> punishment) {
-        String miniMessage = getKickMessageMiniMessage(punishment);
+    public static @NotNull Component getBanKickMessage(Punishment<?> punishment) {
+        String miniMessage = getBanKickMessageMiniMessage(punishment);
         if (miniMessage.isEmpty()) {
             return Component.empty();
         }
@@ -114,10 +115,76 @@ public final class PunishmentMessageUtil {
         return muteMsg.toString();
     }
 
+    public static @NotNull String getNormalKickMessageMiniMessage(Punishment<?> punishment) {
+        return "<gradient:#ffaa00:#ff5555><bold>⚠ You were kicked ⚠</bold></gradient>\n"
+                + "<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>\n\n"
+
+                // Reason
+                + "<gray>📝 </gray><white>Reason:</white> <#ffa500>"
+                + punishment.getReason().orElse("No reason provided")
+                + "</#ffa500>\n"
+
+                // Issuer info (optional, but helpful in multiplayer contexts)
+                + "<gray>👮 </gray><white>By:</white> <yellow>"
+                + punishment.getIssuer().getName()
+                + "</yellow>\n"
+
+                // Issued time
+                + "<gray>📅 </gray><white>Issued:</white> <aqua>"
+                + TimeUtil.formatDate(punishment.getIssuedAt())
+                + "</aqua>\n"
+
+                // Footer
+                + "\n<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>\n"
+                + "<gray><italic>You may rejoin unless otherwise restricted.</italic></gray>";
+    }
+
+    public static @NotNull Component getNormalKickMessage(Punishment<?> punishment) {
+        String miniMessage = getNormalKickMessageMiniMessage(punishment);
+        if (miniMessage.isEmpty()) {
+            return Component.empty();
+        }
+        return MiniMessage.miniMessage().deserialize(miniMessage);
+    }
+
 
     public static @NotNull String getPunishmentBroadcast(final Punishment<?> punishment, final boolean silent) {
-        //if silent add the prefix [SILENT] to it
-        return "";
+        StringBuilder broadcast = new StringBuilder();
+
+        // Add silent prefix with styling
+        if (silent) {
+            broadcast.append("<dark_gray>[<gray>SILENT<dark_gray>]</gray> ");
+        }
+
+        // Main punishment message with fancy styling
+        broadcast.append("<red>⚡ <bold>")
+                .append(punishment.getTarget().getTargetName())
+                .append("</bold> <gray>has been <red><bold>")
+                .append(punishment.getType().toString().toLowerCase())
+                .append("ed</bold></red>");
+
+        // Add reason with styling
+        if (punishment.getReason().isPresent() && punishment.getReason().isPresent()) {
+            broadcast.append(" <dark_gray>» <yellow>")
+                    .append(punishment.getReason())
+                    .append("</yellow>");
+        }
+
+        // Add duration for temporary punishments
+        if (!punishment.isPermanent()) {
+            broadcast.append(" <dark_gray>(<gold>")
+                    .append(TimeUtil.parse(punishment.getDuration()))
+                    .append("</gold>)");
+        }
+
+        // Add executor with styling
+
+        broadcast.append(" <dark_gray>by <aqua>")
+                .append(punishment.getIssuer().getName())
+                .append("</aqua>");
+
+
+        return broadcast.toString();
     }
 
     public static void broadcastPunishment(final Punishment<?> punishment, final boolean silent) {
@@ -126,6 +193,7 @@ public final class PunishmentMessageUtil {
             punishment.getIssuer().sendMsg(msg);
         }else {
             for(Player player : Bukkit.getOnlinePlayers()) {
+                if(!player.hasPermission(CardinalPermissions.STAFF_NOTIFY)) continue;
                 player.sendRichMessage(msg);
             }
         }

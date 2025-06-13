@@ -1,14 +1,17 @@
 package net.mineabyss.core.commands.punishments;
 
 import com.mineabyss.lib.commands.annotations.Command;
+import com.mineabyss.lib.commands.annotations.Description;
 import com.mineabyss.lib.commands.annotations.Greedy;
 import com.mineabyss.lib.commands.annotations.Named;
 import com.mineabyss.lib.commands.annotations.Optional;
+import com.mineabyss.lib.commands.annotations.Permission;
 import com.mineabyss.lib.commands.annotations.Usage;
 import net.mineabyss.cardinal.api.punishments.Punishment;
 import net.mineabyss.cardinal.api.punishments.PunishmentIssuer;
 import net.mineabyss.cardinal.api.punishments.StandardPunishmentType;
 import net.mineabyss.core.Cardinal;
+import net.mineabyss.core.CardinalPermissions;
 import net.mineabyss.core.commands.api.CardinalSource;
 import org.bukkit.OfflinePlayer;
 
@@ -16,6 +19,8 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Command("unmute")
+@Permission(CardinalPermissions.UNMUTE_COMMAND_PERMISSION)
+@Description("Unmutes a player on the server.")
 public final class UnMuteCommand {
 
     @Usage

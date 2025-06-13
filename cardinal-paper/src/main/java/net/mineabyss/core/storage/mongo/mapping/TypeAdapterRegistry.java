@@ -48,16 +48,13 @@ public class TypeAdapterRegistry {
     public <T> TypeAdapter<T> findAdapter(TypeWrap<T> typeWrap) {
         Type type = typeWrap.getType();
 
-        System.out.println("Finding adapter for type '" + type.getTypeName() + "'");
 
         // Find adapter
         for (TypeAdapter<?> adapter : adapters) {
-            System.out.println("Checking adapter '" + adapter.getClass().getName() + "'");
             if (adapter.canHandle(typeWrap)) {
                 return (TypeAdapter<T>) adapter;
             }
         }
-        System.out.println("No adapter found for type '" + type.getTypeName() + "'");
         return null;
     }
     

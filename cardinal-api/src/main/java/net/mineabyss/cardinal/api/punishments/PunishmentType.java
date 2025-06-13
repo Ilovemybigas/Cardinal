@@ -17,4 +17,9 @@ public interface PunishmentType {
      * @return the full name
      */
     String name();
+
+    /**
+     * @return Whether the punishment of that type shall be cached in memory or not.
+     */
+    boolean isMemoryWorthy();
 }

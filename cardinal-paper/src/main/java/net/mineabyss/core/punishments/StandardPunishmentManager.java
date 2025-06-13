@@ -1366,6 +1366,9 @@ public class StandardPunishmentManager implements PunishmentManager {
     }
 
     private void updateActivePunishment(Punishment<?> punishment) {
+        if(!punishment.getType().isMemoryWorthy()) {
+            return;
+        }
         activePunishmentsPerID.put(punishment.getId().getRepresentation(), punishment);
         //update in the type
 
