@@ -3,6 +3,7 @@ package net.mineabyss.core.listener;
 import net.kyori.adventure.text.Component;
 import net.mineabyss.cardinal.api.CardinalProvider;
 import net.mineabyss.cardinal.api.punishments.Punishment;
+import net.mineabyss.cardinal.api.punishments.PunishmentScanResult;
 import net.mineabyss.cardinal.api.punishments.StandardPunishmentType;
 import net.mineabyss.core.Cardinal;
 import net.mineabyss.core.punishments.issuer.PunishmentIssuerFactory;
@@ -24,37 +25,43 @@ public class BanListener implements Listener {
 
         try {
             // Check for active ban punishment
-            Optional<Punishment<?>> activeBan = CardinalProvider.provide().getPunishmentManager()
+            PunishmentScanResult scanResult = CardinalProvider.provide().getPunishmentManager()
                     .scan(uuid, event.getAddress().getHostAddress(), StandardPunishmentType.BAN)
-                    .join()
-                    .getFoundPunishment();
+                    .join();
 
-            if (activeBan.isEmpty()) {
-                Cardinal.log("No active ban punishments!");
-                return; // No active ban, allow login
+            if(scanResult.failed()) {
+                if(scanResult.getFoundPunishment().isEmpty()) {
+                    Cardinal.log("No active ban punishments!");
+                }
+                scanResult.log();
+                return;
             }
 
-            Punishment<?> punishment = activeBan.get();
-            LoginResult result = processBanPunishment(punishment, uuid, playerName);
+            Optional<Punishment<?>> activeBan = scanResult.getFoundPunishment();
+            activeBan.ifPresent((punishment)-> {
 
-            switch (result.action()) {
-                case ALLOW -> {
-                    if (result.message() != null) {
-                        Cardinal.log("Player " + playerName + " ban expired/revoked: " + result.message());
+                LoginResult result = processBanPunishment(punishment, playerName);
+
+                switch (result.action()) {
+                    case ALLOW -> {
+                        if (result.message() != null) {
+                            Cardinal.log("Player " + playerName + " ban expired/revoked: " + result.message());
+                        }
+                        event.allow();
                     }
-                    event.allow();
+                    case DENY -> {
+                        Cardinal.log("Player " + playerName + " login denied - Active ban: " + punishment.getId().getRepresentation());
+                        event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, result.kickMessage());
+                    }
+                    case ERROR -> {
+                        Cardinal.severe("Error processing ban for player " + playerName + ": " + result.message());
+                        // Fail-safe: deny login on error to prevent bypassing bans
+                        event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
+                                Component.text("Authentication error. Please try again later."));
+                    }
                 }
-                case DENY -> {
-                    Cardinal.log("Player " + playerName + " login denied - Active ban: " + punishment.getId().getRepresentation());
-                    event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, result.kickMessage());
-                }
-                case ERROR -> {
-                    Cardinal.severe("Error processing ban for player " + playerName + ": " + result.message());
-                    // Fail-safe: deny login on error to prevent bypassing bans
-                    event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
-                            Component.text("Authentication error. Please try again later."));
-                }
-            }
+
+            });
 
         } catch (Exception e) {
             Cardinal.severe("Unexpected error during ban check for player " + playerName + ": " + e.getMessage());
@@ -67,23 +74,9 @@ public class BanListener implements Listener {
     }
 
     /**
-     * Retrieves active ban punishment for the given UUID
-     */
-    private Optional<Punishment<?>> getActiveBanPunishment(UUID uuid) {
-        try {
-            return Cardinal.getInstance().getPunishmentManager()
-                    .getActivePunishment(uuid, StandardPunishmentType.BAN)
-                    .join();
-        } catch (Exception e) {
-            Cardinal.severe("Failed to retrieve active ban for UUID " + uuid + ": " + e.getMessage());
-            return Optional.empty();
-        }
-    }
-
-    /**
      * Processes ban punishment and determines login result
      */
-    private LoginResult processBanPunishment(Punishment<?> punishment, UUID uuid, String playerName) {
+    private LoginResult processBanPunishment(Punishment<?> punishment, String playerName) {
         try {
             // Handle permanent bans
             System.out.println("Punishment");

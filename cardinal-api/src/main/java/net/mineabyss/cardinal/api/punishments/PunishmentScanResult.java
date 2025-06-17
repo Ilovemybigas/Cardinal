@@ -67,4 +67,13 @@ public sealed interface PunishmentScanResult permits ScanResultImpl {
         return new ScanResultImpl(null, null);
     }
 
+    default boolean failed() {
+        return getError() != null || getFoundPunishment().isEmpty();
+    }
+
+    default void log() {
+        Throwable ex = getError();
+        if(ex != null)
+            ex.printStackTrace();
+    }
 }
