@@ -14,7 +14,6 @@ import net.mineabyss.cardinal.api.punishments.Punishable;
 import net.mineabyss.cardinal.api.punishments.Punishment;
 import net.mineabyss.cardinal.api.punishments.PunishmentIssuer;
 import net.mineabyss.cardinal.api.punishments.StandardPunishmentType;
-import net.mineabyss.cardinal.api.util.FutureOperation;
 import net.mineabyss.core.Cardinal;
 import net.mineabyss.core.CardinalPermissions;
 import net.mineabyss.core.commands.api.AllowsPunishmentID;

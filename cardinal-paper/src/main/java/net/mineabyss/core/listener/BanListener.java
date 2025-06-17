@@ -1,6 +1,7 @@
 package net.mineabyss.core.listener;
 
 import net.kyori.adventure.text.Component;
+import net.mineabyss.cardinal.api.CardinalProvider;
 import net.mineabyss.cardinal.api.punishments.Punishment;
 import net.mineabyss.cardinal.api.punishments.StandardPunishmentType;
 import net.mineabyss.core.Cardinal;
@@ -23,7 +24,10 @@ public class BanListener implements Listener {
 
         try {
             // Check for active ban punishment
-            Optional<Punishment<?>> activeBan = getActiveBanPunishment(uuid);
+            Optional<Punishment<?>> activeBan = CardinalProvider.provide().getPunishmentManager()
+                    .scan(uuid, event.getAddress().getHostAddress(), StandardPunishmentType.BAN)
+                    .join()
+                    .getFoundPunishment();
 
             if (activeBan.isEmpty()) {
                 Cardinal.log("No active ban punishments!");

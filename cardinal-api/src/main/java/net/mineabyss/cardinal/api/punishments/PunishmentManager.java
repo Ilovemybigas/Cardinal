@@ -10,6 +10,7 @@ import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Manager interface for handling player punishments in the system.
@@ -546,5 +547,17 @@ public interface PunishmentManager {
      */
     FutureOperation<Deque<PunishmentRevision>> getPunishmentRevisions(PunishmentID punishmentId);
 
-    void revokePunishmentFromMemory(Punishment<?> punishment);
+    /**
+     * Scans for active punishments associated with the specified player identification parameters.
+     * This method performs a comprehensive check across multiple identification vectors to determine
+     * if any active punishments exist for the given player.
+     *
+     * @param uuid           the player's unique identifier, may be null if unavailable
+     * @param ipAddress      the player's IP address as a string may be null if unavailable
+     * @param punishmentType
+     * @return a {@link PunishmentScanResult} containing the scan results and any errors encountered
+     * @throws IllegalArgumentException if username is null or empty
+     * @since 1.0
+     */
+    @NotNull CompletableFuture<PunishmentScanResult> scan(@NotNull UUID uuid, @Nullable String ipAddress, PunishmentType punishmentType);
 }

@@ -11,6 +11,7 @@ import net.mineabyss.cardinal.api.punishments.PunishmentID;
 import net.mineabyss.cardinal.api.punishments.PunishmentIssuer;
 import net.mineabyss.cardinal.api.punishments.PunishmentManager;
 import net.mineabyss.cardinal.api.punishments.PunishmentRevision;
+import net.mineabyss.cardinal.api.punishments.PunishmentScanResult;
 import net.mineabyss.cardinal.api.punishments.PunishmentSearchCriteria;
 import net.mineabyss.cardinal.api.punishments.PunishmentStatistics;
 import net.mineabyss.cardinal.api.punishments.PunishmentType;
@@ -1360,10 +1361,35 @@ public class StandardPunishmentManager implements PunishmentManager {
         }));
     }
 
+    @NotNull
     @Override
-    public void revokePunishmentFromMemory(Punishment<?> punishment) {
-        removeActivePunishmentFromCache(punishment);
+    public CompletableFuture<PunishmentScanResult> scan(@NotNull UUID uuid, @Nullable String ipAddress, PunishmentType punishmentType) {
+
+        return getActivePunishment(uuid,punishmentType)
+                .unwrap()
+                .thenCompose((punishmentContainer)-> {
+
+                    if(punishmentContainer.isPresent()) {
+                        return CompletableFuture.completedFuture(punishmentContainer);
+                    }
+
+                    return getActiveIPPunishment(ipAddress, punishmentType)
+                            .unwrap();
+
+                })
+
+                .thenApply((punishmentContainer)-> {
+                    if(punishmentContainer.isPresent()) {
+                        return PunishmentScanResult.success(punishmentContainer.get());
+                    }
+
+                    return PunishmentScanResult.failure();
+                })
+                .exceptionally((ex)-> {
+                    return PunishmentScanResult.failure(ex);
+                });
     }
+
 
     private void updateActivePunishment(Punishment<?> punishment) {
         if(!punishment.getType().isMemoryWorthy()) {

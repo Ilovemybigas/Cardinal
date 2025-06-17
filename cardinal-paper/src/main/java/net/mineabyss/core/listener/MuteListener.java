@@ -1,14 +1,15 @@
 package net.mineabyss.core.listener;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import net.mineabyss.cardinal.api.CardinalProvider;
 import net.mineabyss.cardinal.api.punishments.Punishment;
 import net.mineabyss.cardinal.api.punishments.StandardPunishmentType;
-import net.mineabyss.core.Cardinal;
 import net.mineabyss.core.util.PunishmentMessageUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import java.util.Objects;
 
 public class MuteListener implements Listener {
 
@@ -17,8 +18,13 @@ public class MuteListener implements Listener {
 
         Player player = event.getPlayer();
 
-        var punishmentContainer = Cardinal.getInstance().getPunishmentManager().getActivePunishment(player.getUniqueId(), StandardPunishmentType.MUTE)
-                        .join();
+        String ipAddress = Objects.requireNonNull(player.getAddress()).getAddress().getHostAddress();
+
+        var punishmentContainer =
+        CardinalProvider.provide().getPunishmentManager()
+                .scan(player.getUniqueId(), ipAddress, StandardPunishmentType.BAN)
+                .join()
+                .getFoundPunishment();
 
         if(punishmentContainer.isPresent()) {
             Punishment<?> punishment = punishmentContainer.get();

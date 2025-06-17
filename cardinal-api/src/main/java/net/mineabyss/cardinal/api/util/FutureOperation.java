@@ -72,6 +72,16 @@ public final class FutureOperation<T> {
         });
         return this;
     }
+
+    public FutureOperation<T> onErrorAndReturn(Function<Throwable, T> onError) {
+        future.exceptionally((ex) -> {
+            if (ex != null && onError != null) {
+                return onError.apply(ex);
+            }
+            return null;
+        });
+        return this;
+    }
     
     /**
      * Handle both success and error
