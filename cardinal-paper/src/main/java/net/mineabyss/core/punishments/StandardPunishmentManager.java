@@ -16,6 +16,7 @@ import net.mineabyss.cardinal.api.punishments.PunishmentSearchCriteria;
 import net.mineabyss.cardinal.api.punishments.PunishmentStatistics;
 import net.mineabyss.cardinal.api.punishments.PunishmentType;
 import net.mineabyss.cardinal.api.punishments.StandardPunishmentType;
+import net.mineabyss.cardinal.api.punishments.templates.PunishmentHistoryService;
 import net.mineabyss.cardinal.api.storage.QueryBuilder;
 import net.mineabyss.cardinal.api.storage.Repository;
 import net.mineabyss.cardinal.api.storage.StorageEngine;
@@ -1388,6 +1389,12 @@ public class StandardPunishmentManager implements PunishmentManager {
                 .exceptionally((ex)-> {
                     return PunishmentScanResult.failure(ex);
                 });
+    }
+
+    @Override
+    public PunishmentHistoryService getHistoryService() {
+        //TODO make impl of history service using the manager with DI.
+        return null;
     }
 
 

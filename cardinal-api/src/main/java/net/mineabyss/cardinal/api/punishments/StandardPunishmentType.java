@@ -24,4 +24,9 @@ public enum StandardPunishmentType implements PunishmentType {
         return memoryWorthy;
     }
 
+    @Override
+    public boolean supportsDuration() {
+        return this != KICK;
+    }
+
 }

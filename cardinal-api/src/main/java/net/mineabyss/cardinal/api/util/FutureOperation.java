@@ -1,5 +1,6 @@
 package net.mineabyss.cardinal.api.util;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -132,7 +133,15 @@ public final class FutureOperation<T> {
     public FutureOperation<T> sendMessageOnSuccess(CommandSender sender, String successMessage) {
         return onSuccess(() -> sender.sendRichMessage(successMessage));
     }
-    
+
+    /**
+     * Send a message to CommandSender on success (for Void futures)
+     */
+    public FutureOperation<T> sendMessageOnSuccess(CommandSender sender, Component successMessage) {
+        return onSuccess(() -> sender.sendMessage(successMessage));
+    }
+
+
     /**
      * Send messages on both success and error
      */

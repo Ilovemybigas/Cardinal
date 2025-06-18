@@ -22,4 +22,6 @@ public interface PunishmentType {
      * @return Whether the punishment of that type shall be cached in memory or not.
      */
     boolean isMemoryWorthy();
+
+    boolean supportsDuration();
 }

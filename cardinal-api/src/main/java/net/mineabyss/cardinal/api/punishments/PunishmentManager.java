@@ -1,5 +1,6 @@
 package net.mineabyss.cardinal.api.punishments;
 
+import net.mineabyss.cardinal.api.punishments.templates.PunishmentHistoryService;
 import net.mineabyss.cardinal.api.util.FutureOperation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -560,4 +561,6 @@ public interface PunishmentManager {
      * @since 1.0
      */
     @NotNull CompletableFuture<PunishmentScanResult> scan(@NotNull UUID uuid, @Nullable String ipAddress, PunishmentType punishmentType);
+
+    PunishmentHistoryService getHistoryService();
 }

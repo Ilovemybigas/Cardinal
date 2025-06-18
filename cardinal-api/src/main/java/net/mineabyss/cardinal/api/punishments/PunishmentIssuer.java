@@ -1,8 +1,11 @@
 package net.mineabyss.cardinal.api.punishments;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -10,6 +13,12 @@ import java.util.UUID;
  * This interface provides methods to retrieve the name, unique identifier, and type of the issuer.
  */
 public interface PunishmentIssuer {
+
+    default @NotNull CommandSender getOrigin() {
+        if(isConsole())
+            return Bukkit.getConsoleSender();
+        else return Objects.requireNonNull(Bukkit.getPlayer(getUniqueId()));
+    }
 
     /**
      * Returns the name of the issuer.

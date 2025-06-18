@@ -22,7 +22,7 @@ public class MuteListener implements Listener {
         String ipAddress = Objects.requireNonNull(player.getAddress()).getAddress().getHostAddress();
 
         PunishmentScanResult result = CardinalProvider.provide().getPunishmentManager()
-                .scan(player.getUniqueId(), ipAddress, StandardPunishmentType.BAN)
+                .scan(player.getUniqueId(), ipAddress, StandardPunishmentType.MUTE)
                 .join();
 
         if(result.failed()) {

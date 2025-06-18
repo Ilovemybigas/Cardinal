@@ -22,6 +22,7 @@ import net.mineabyss.core.commands.api.exceptions.CardinalSourceException;
 import net.mineabyss.core.commands.punishments.BanCommand;
 import net.mineabyss.core.commands.punishments.MuteCommand;
 import net.mineabyss.core.commands.punishments.UnbanCommand;
+import net.mineabyss.core.commands.punishments.WarnCommand;
 import net.mineabyss.core.config.YamlMessageConfig;
 import net.mineabyss.core.listener.BanListener;
 import net.mineabyss.core.listener.MuteListener;
@@ -71,7 +72,8 @@ public final class Cardinal extends MineAbyssPlugin implements CardinalAPI {
                 new BanCommand(),
                 new UnbanCommand(),
                 new MuteCommand(),
-                new UnMuteCommand()
+                new UnMuteCommand(),
+                new WarnCommand()
         );
     }
 
