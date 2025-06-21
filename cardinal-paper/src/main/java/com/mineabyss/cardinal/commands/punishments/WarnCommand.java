@@ -1,5 +1,7 @@
 package com.mineabyss.cardinal.commands.punishments;
 
+import com.mineabyss.cardinal.api.punishments.Punishment;
+import com.mineabyss.cardinal.util.Pair;
 import com.mineabyss.lib.commands.BukkitSource;
 import com.mineabyss.lib.commands.annotations.Command;
 import com.mineabyss.lib.commands.annotations.ContextResolved;
@@ -22,6 +24,7 @@ import com.mineabyss.cardinal.config.MessageKeys;
 import com.mineabyss.cardinal.util.PunishmentMessageUtil;
 
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 
 @Command("warn")
 public class WarnCommand {
@@ -37,7 +40,7 @@ public class WarnCommand {
     @Usage
     public void exec(
             PunishmentIssuer issuer,
-            @Named("user")Punishable<?> target,
+            @Named("user") CompletableFuture<Punishable<?>> targetFuture,
             @Switch({"silent", "s"}) boolean silent,
             @Optional @Greedy String reason
     ) {
@@ -50,22 +53,31 @@ public class WarnCommand {
             warnReason = reason;
         }
 
-        Cardinal.getInstance().getPunishmentManager()
-                .applyPunishment(StandardPunishmentType.WARN, issuer, target, Duration.ZERO, warnReason)
-                .onSuccess((punishment)-> {
-                    TagResolver resolver = punishment.asTagResolver();
-                    //we notify the victim
-                    target.sendMsg(config.getMessage(MessageKeys.Punishments.Warn.NOTIFICATION, resolver));
+        targetFuture.thenApplyAsync((target)-> {
 
-                    //we broadcast the message
-                    MessageKey normalKey = MessageKeys.Punishments.Warn.BROADCAST;
-                    MessageKey silentKey = MessageKeys.Punishments.Warn.BROADCAST_SILENT;
-                    PunishmentMessageUtil.broadcastPunishment(normalKey, silentKey, punishment, silent);
+            Punishment<?> punishment = Cardinal.getInstance().getPunishmentManager()
+                    .applyPunishment(StandardPunishmentType.WARN, issuer, target, Duration.ZERO, warnReason).join();
 
-                    // success
-                    issuer.sendMsg(config.getMessage(MessageKeys.Punishments.Warn.SUCCESS, resolver));
+            return new Pair<>(target, punishment);
+        })
+        .whenComplete((data, ex)-> {
+            if(ex != null) {ex.printStackTrace();}
+            var target = data.left();
+            var punishment = data.right();
+            TagResolver resolver = punishment.asTagResolver();
+            //we notify the victim
+            target.sendMsg(config.getMessage(MessageKeys.Punishments.Warn.NOTIFICATION, resolver));
 
-                });
+            //we broadcast the message
+            MessageKey normalKey = MessageKeys.Punishments.Warn.BROADCAST;
+            MessageKey silentKey = MessageKeys.Punishments.Warn.BROADCAST_SILENT;
+            PunishmentMessageUtil.broadcastPunishment(normalKey, silentKey, punishment, silent);
+
+            // success
+            issuer.sendMsg(config.getMessage(MessageKeys.Punishments.Warn.SUCCESS, resolver));
+        });
+
+
 
     }
 

@@ -342,7 +342,6 @@ public final class StandardPunishment<T> implements Punishment<T> {
     @NotNull
     @Override
     public TagResolver asTagResolver() {
-        Duration remaining = Duration.between(Instant.now(), expiresAt);
         return TagResolver.builder()
                 .tag("punishment_target", Tag.preProcessParsed(target.getTargetName()))
                 .tag("punishment_issuer", Tag.preProcessParsed(issuer.getName()))
@@ -351,7 +350,8 @@ public final class StandardPunishment<T> implements Punishment<T> {
                 .tag("punishment_issued_date", Tag.preProcessParsed(TimeUtil.formatDate(this.issuedAt)))
                 .tag("punishment_expires_date", Tag.preProcessParsed(expiresAt == null ? "Forever" : TimeUtil.formatDate(this.expiresAt)))
                 .tag("punishment_duration", Tag.preProcessParsed( this.isPermanent() ? "∞" : TimeUtil.format(this.duration)) )
-                .tag("punishment_time_left", Tag.preProcessParsed(this.isPermanent() ? "∞" : TimeUtil.format(remaining)))
+                .tag("punishment_time_left", Tag.preProcessParsed( this.isPermanent()
+                        || expiresAt == null ? "∞" : TimeUtil.format(Duration.between(Instant.now(), expiresAt))))
                 .build();
     }
 

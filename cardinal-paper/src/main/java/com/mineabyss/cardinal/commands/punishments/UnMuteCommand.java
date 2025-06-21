@@ -1,5 +1,7 @@
 package com.mineabyss.cardinal.commands.punishments;
 
+import com.mineabyss.cardinal.api.punishments.Punishable;
+import com.mineabyss.cardinal.util.Pair;
 import com.mineabyss.lib.commands.annotations.Command;
 import com.mineabyss.lib.commands.annotations.Dependency;
 import com.mineabyss.lib.commands.annotations.Description;
@@ -17,8 +19,7 @@ import com.mineabyss.cardinal.Cardinal;
 import com.mineabyss.cardinal.CardinalPermissions;
 import com.mineabyss.cardinal.commands.api.CardinalSource;
 import com.mineabyss.cardinal.config.MessageKeys;
-import org.bukkit.OfflinePlayer;
-import java.util.UUID;
+
 import java.util.concurrent.CompletableFuture;
 
 @Command("unmute")
@@ -37,41 +38,41 @@ public final class UnMuteCommand {
     @Usage
     public void unmute(
             PunishmentIssuer issuer,
-            @Named("user")OfflinePlayer user,
+            @Named("user")CompletableFuture<Punishable<?>> targetFuture,
             @Named("reason") @Greedy @Optional String reason
     ) {
+        targetFuture.thenApplyAsync((target)-> {
+            java.util.Optional<Punishment<?>> punishmentContainer =  target.fetchPunishment(StandardPunishmentType.MUTE).unwrap().join();
+            return new Pair<>(target, punishmentContainer);
+        }).thenApplyAsync((data)-> {
 
-        if(user.getName() == null) {
-            issuer.sendMsg("<red>User doesn't exist !");
-            return;
-        }
+            var punishmentContainer = data.right();
+            Punishable<?> target = data.left();
 
-        UUID userUUID = user.getUniqueId();
-        Cardinal.getInstance().getPunishmentManager()
-                .getActivePunishment(userUUID, StandardPunishmentType.MUTE)
-                .thenCompose((punishmentContainer)-> {
+            if(punishmentContainer.isEmpty()) {
+                return new Pair<>(false, target);
+            }else {
 
-                    if(punishmentContainer.isEmpty()) {
-                        return CompletableFuture.completedFuture(false);
-                    }else {
+                Punishment<?> punishment = punishmentContainer.get();
+                return Cardinal.getInstance().getPunishmentManager()
+                        .revokePunishment(punishment.getId(), issuer, reason)
+                        .map((revoked)-> new Pair<>(revoked, target))
+                        .unwrap()
+                        .join();
+            }
 
-                        Punishment<?> punishment = punishmentContainer.get();
-                        return Cardinal.getInstance().getPunishmentManager()
-                                .revokePunishment(punishment.getId(), issuer, reason).unwrap();
-                    }
+        }).whenComplete((data, ex)-> {
+            if(ex != null) {ex.printStackTrace();}
 
-                })
-                .onSuccess((revoked)-> {
-
-                    if(revoked) {
-                        //send success to user
-                        issuer.sendMsg(config.getMessage(MessageKeys.Punishments.Unmute.NOT_MUTED, Placeholder.unparsed("target", user.getName()),
-                                Placeholder.unparsed("reason", reason)));
-                    }
-                    else {
-                        issuer.sendMsg(config.getMessage(MessageKeys.Punishments.Unmute.SUCCESS, Placeholder.unparsed("target", user.getName()), Placeholder.unparsed("reason", reason)));
-                    }
-                });
+            var revoked = data.left();
+            var target = data.right();
+            if(revoked) {
+                issuer.sendMsg(config.getMessage(MessageKeys.Punishments.Unmute.SUCCESS, Placeholder.unparsed("target", target.getTargetName())));
+            }
+            else {
+                issuer.sendMsg(config.getMessage(MessageKeys.Punishments.Unmute.NOT_MUTED, Placeholder.unparsed("target", target.getTargetName())));
+            }
+        });
 
     }
 

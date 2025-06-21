@@ -185,7 +185,8 @@ public class PunishmentAdapter implements TypeAdapter<Punishment<?>> {
             if (durationStr == null) {
                 throw new DeserializationException("Missing duration");
             }
-            Duration duration = TimeUtil.parse(durationStr);
+
+            Duration duration = durationStr.isEmpty() ? Duration.ZERO : TimeUtil.parse(durationStr);
 
             Instant expiresAt = null;
             Long expiresAtMillis = document.getLong(EXPIRES_AT_FIELD);

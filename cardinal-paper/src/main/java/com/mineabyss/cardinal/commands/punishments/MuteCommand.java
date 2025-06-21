@@ -1,5 +1,7 @@
 package com.mineabyss.cardinal.commands.punishments;
 
+import com.mineabyss.cardinal.config.MessageKeys;
+import com.mineabyss.cardinal.util.Pair;
 import com.mineabyss.lib.commands.annotations.Command;
 import com.mineabyss.lib.commands.annotations.DefaultProvider;
 import com.mineabyss.lib.commands.annotations.Dependency;
@@ -20,6 +22,7 @@ import com.mineabyss.cardinal.CardinalPermissions;
 import com.mineabyss.cardinal.commands.api.CardinalSource;
 import com.mineabyss.cardinal.commands.api.DefaultReasonProvider;
 import com.mineabyss.cardinal.util.PunishmentMessageUtil;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import java.time.Duration;
@@ -42,52 +45,70 @@ public class MuteCommand {
     @Usage
     public void exec(
             PunishmentIssuer issuer,
-            @Named("user") Punishable<?> target,
+            @Named("user") CompletableFuture<Punishable<?>> targetFuture,
             @Switch("silent") boolean silent,
             @Named("duration") @Optional Duration duration,
             @Named("reason") @DefaultProvider(DefaultReasonProvider.class) String reason
     ) {
+        targetFuture.thenCompose((target)-> {
+            return target.fetchPunishment(StandardPunishmentType.MUTE)
+                    .onError(Throwable::printStackTrace)
+                    .thenApply((punishmentContainer)-> new Pair<>(target, punishmentContainer)).unwrap();
+        }).thenApplyAsync((data)-> {
 
-        target.fetchPunishment(StandardPunishmentType.MUTE)
-                .thenCompose((punishmentContainer)-> {
-                    if(punishmentContainer.isPresent()) {
+            Punishable<?> target = data.left();
+            var punishmentContainer = data.right();
 
-                        if(issuer.hasPermission(CardinalPermissions.OVERRIDE_PUNISHMENTS_PERMISSION)) {
-                            Punishment<?> punishment = punishmentContainer.get();
-                            punishment.setDuration(duration);
-                            punishment.setReason(reason);
-                            return Cardinal.getInstance().getPunishmentManager()
-                                    .applyPunishment(punishment)
-                                    .unwrap().<java.util.Optional<Punishment<?>>>thenApply(java.util.Optional::of);
-                        }else {
-                            //no perm
-                            issuer.sendMsg("<dark_red>ERROR:</dark_red> <red>User '" + target.getTargetName() + "' is already muted !");
-                            return CompletableFuture.completedFuture(punishmentContainer);
-                        }
+            if(punishmentContainer.isPresent()) {
 
-                    }else {
-                        return Cardinal.getInstance().getPunishmentManager()
-                                .applyPunishment(StandardPunishmentType.MUTE, issuer, target, duration, reason)
-                                .map((p)-> (Punishment<?>)p)
-                                .onSuccess((punishment)-> {
-                                    //kick if online
-                                    OfflinePlayer offlinePlayer = target.asOfflinePlayer();
-                                    if(offlinePlayer != null && offlinePlayer.isOnline()) {
-                                        MessageKey key = punishment.isPermanent() ?  Mute.NOTIFICATION_PERMANENT : Mute.NOTIFICATION_TEMPORARY;
-                                        ((Player)offlinePlayer).sendMessage(config.getMessage(key, punishment.asTagResolver()));
-                                    }
-                                    MessageKey normalBCKey = punishment.isPermanent() ? Mute.BROADCAST : Mute.BROADCAST_TEMPORARY;
-                                    MessageKey silentBCKey = punishment.isPermanent() ? Mute.BROADCAST_SILENT : Mute.BROADCAST_TEMPORARY_SILENT;
+                if(issuer.hasPermission(CardinalPermissions.OVERRIDE_PUNISHMENTS_PERMISSION)) {
+                    //let's override.
+                    Punishment<?> punishment = punishmentContainer.get();
+                    punishment.setReason(reason);
+                    punishment.setDuration(duration);
+                    return Cardinal.getInstance().getPunishmentManager()
+                            .applyPunishment(punishment)
+                            .thenApply((p)-> new Pair<>(target, p))
+                            .join();
+                }else {
+                    //send that he's already muted
+                    issuer.sendMsg(config.getMessage(MessageKeys.Punishments.Mute.ALREADY_MUTED, Placeholder.unparsed("target",
+                            target.getTargetName())));
+                    return new Pair<>(target, punishmentContainer.get());
+                }
 
-                                    PunishmentMessageUtil.broadcastPunishment(normalBCKey, silentBCKey, punishment, silent);
+            }else {
+                Cardinal.log("Applying new punishment to " + target.getTargetName());
+                return Cardinal.getInstance().getPunishmentManager()
+                        .applyPunishment(StandardPunishmentType.MUTE, issuer, target, duration, reason)
+                        .map((p)-> (Punishment<?>)p)
+                        .thenApply((p)-> new Pair<>(target, p))
+                        .join();
+            }
 
-                                    //send success
-                                    issuer.sendMsg(config.getMessage(punishment.isPermanent() ? Mute.SUCCESS : Mute.SUCCESS_TEMPORARY, punishment.asTagResolver()));
-                                }).unwrap()
-                                .thenApply(java.util.Optional::of);
-                    }
+        }).whenComplete((data, ex)-> {
+            if(ex != null ) {
+               ex.printStackTrace();
+               return;
+            }
 
-                });
+            Punishable<?> target = data.left();
+            var punishment = data.right();
+
+            OfflinePlayer offlinePlayer = target.asOfflinePlayer();
+            if(offlinePlayer != null && offlinePlayer.isOnline()) {
+                MessageKey key = punishment.isPermanent() ?  Mute.NOTIFICATION_PERMANENT : Mute.NOTIFICATION_TEMPORARY;
+                ((Player)offlinePlayer).sendMessage(config.getMessage(key, punishment.asTagResolver()));
+            }
+            MessageKey normalBCKey = punishment.isPermanent() ? Mute.BROADCAST : Mute.BROADCAST_TEMPORARY;
+            MessageKey silentBCKey = punishment.isPermanent() ? Mute.BROADCAST_SILENT : Mute.BROADCAST_TEMPORARY_SILENT;
+
+            PunishmentMessageUtil.broadcastPunishment(normalBCKey, silentBCKey, punishment, silent);
+
+            //send success
+            issuer.sendMsg(config.getMessage(punishment.isPermanent() ? Mute.SUCCESS : Mute.SUCCESS_TEMPORARY, punishment.asTagResolver()));
+
+        });
 
 
     }

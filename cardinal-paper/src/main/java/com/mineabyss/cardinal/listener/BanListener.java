@@ -92,6 +92,7 @@ public class BanListener implements Listener {
             return LoginResult.deny(PunishmentMessageUtil.getBanKickMessage(punishment));
 
         } catch (Exception e) {
+            e.printStackTrace();
             return LoginResult.error("Failed to process ban punishment: " + e.getMessage());
         }
     }

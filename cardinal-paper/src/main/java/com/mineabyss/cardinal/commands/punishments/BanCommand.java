@@ -1,5 +1,6 @@
 package com.mineabyss.cardinal.commands.punishments;
 
+import com.mineabyss.cardinal.util.Pair;
 import com.mineabyss.lib.commands.annotations.Command;
 import com.mineabyss.lib.commands.annotations.DefaultProvider;
 import com.mineabyss.lib.commands.annotations.Dependency;
@@ -28,6 +29,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.jetbrains.annotations.NotNull;
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
+
 import static com.mineabyss.cardinal.config.MessageKeys.Punishments.Ban;
 
 @Command("ban")
@@ -47,7 +50,7 @@ public class BanCommand {
     @Usage
     public void banPlayer(
             PunishmentIssuer issuer,
-            @Named("player") Punishable<?> target,
+            @Named("player") CompletableFuture<Punishable<?>> targetFuture,
             @Switch({"silent", "s"}) boolean silent,
             @Named("duration") @Optional Duration duration,
             @Named("reason") @Greedy @DefaultProvider(DefaultReasonProvider.class) @NotNull String reason
@@ -55,55 +58,65 @@ public class BanCommand {
         // /ban <player> [-s] [duration] [reason]
 
         //check if the user is already banned
-        target.fetchPunishment(StandardPunishmentType.BAN)
-                .onError(Throwable::printStackTrace)
-                .thenApplyAsync((punishmentContainer)-> {
-                    if(punishmentContainer.isPresent()) {
+        targetFuture.thenCompose((target)-> {
+            return target.fetchPunishment(StandardPunishmentType.BAN)
+                    .onError(Throwable::printStackTrace)
+                    .thenApply((punishmentContainer)-> new Pair<>(target, punishmentContainer)).unwrap();
+        }).thenApplyAsync((data)-> {
+            var punishmentContainer = data.right();
+            var target = data.left();
 
-                        if(issuer.hasPermission(CardinalPermissions.OVERRIDE_PUNISHMENTS_PERMISSION)) {
-                            //let's override.
-                            Punishment<?> punishment = punishmentContainer.get();
-                            punishment.setReason(reason);
-                            punishment.setDuration(duration);
-                            return Cardinal.getInstance().getPunishmentManager()
-                                    .applyPunishment(punishment)
-                                    .join();
-                        }else {
-                            //send that he's already banned
-                            issuer.sendMsg(config.getMessage(Ban.ALREADY_BANNED, Placeholder.unparsed("target", target.getTargetName())));
-                            return punishmentContainer.get();
-                        }
+            if(punishmentContainer.isPresent()) {
 
-                    }else {
-                        Cardinal.log("Applying new punishment to " + target.getTargetName());
-                        return Cardinal.getInstance().getPunishmentManager()
-                                .applyPunishment(StandardPunishmentType.BAN, issuer, target, duration, reason)
-                                .map((p)-> (Punishment<?>)p)
-                                .join();
-                    }
+                if(issuer.hasPermission(CardinalPermissions.OVERRIDE_PUNISHMENTS_PERMISSION)) {
+                    //let's override.
+                    Punishment<?> punishment = punishmentContainer.get();
+                    punishment.setReason(reason);
+                    punishment.setDuration(duration);
+                    return Cardinal.getInstance().getPunishmentManager()
+                            .applyPunishment(punishment)
+                            .thenApply((p)-> new Pair<>(target, p))
+                            .join();
+                }else {
+                    //send that he's already banned
+                    issuer.sendMsg(config.getMessage(Ban.ALREADY_BANNED, Placeholder.unparsed("target", target.getTargetName())));
+                    return new Pair<>(target, punishmentContainer.get());
+                }
 
-                })
-                .onSuccess((punishment)-> {
+            }else {
+                Cardinal.log("Applying new punishment to " + target.getTargetName());
+                return Cardinal.getInstance().getPunishmentManager()
+                        .applyPunishment(StandardPunishmentType.BAN, issuer, target, duration, reason)
+                        .map((p)-> (Punishment<?>)p)
+                        .thenApply((p)-> new Pair<>(target, p))
+                        .join();
+            }
 
-                    //kick if online
-                    Player online = Bukkit.getPlayer(target.getTargetUUID());
-                    if (online != null && online.isOnline()) {
-                        Tasks.runSync(()-> {
-                            online.kick(
-                                    config.getMessage(punishment.isPermanent() ? Ban.KICK_MESSAGE_PERMANENT : Ban.KICK_MESSAGE_TEMPORARY,
-                                            punishment.asTagResolver()),
-                                    PlayerKickEvent.Cause.BANNED
-                            );
-                        });
-                    }
+        })
+        .whenComplete((data, ex)-> {
+            if(ex != null ){ ex.printStackTrace();}
 
-                    MessageKey normalKey = punishment.isPermanent() ? Ban.BROADCAST : Ban.BROADCAST_TEMPORARY;
-                    MessageKey silentKey = punishment.isPermanent() ? Ban.BROADCAST_SILENT : Ban.BROADCAST_TEMPORARY_SILENT;
+            var punishment = data.right();
+            var target = data.left();
 
-                    PunishmentMessageUtil.broadcastPunishment(normalKey, silentKey, punishment, silent);
-
-                    issuer.sendMsg(config.getMessage(punishment.isPermanent() ? Ban.SUCCESS : Ban.SUCCESS_TEMPORARY, punishment.asTagResolver()));
+            //kick if online
+            Player online = Bukkit.getPlayer(target.getTargetUUID());
+            if (online != null && online.isOnline()) {
+                Tasks.runSync(()-> {
+                    online.kick(
+                            config.getMessage(punishment.isPermanent() ? Ban.KICK_MESSAGE_PERMANENT : Ban.KICK_MESSAGE_TEMPORARY,
+                                    punishment.asTagResolver()),
+                            PlayerKickEvent.Cause.BANNED
+                    );
                 });
+            }
+
+            MessageKey normalKey = punishment.isPermanent() ? Ban.BROADCAST : Ban.BROADCAST_TEMPORARY;
+            MessageKey silentKey = punishment.isPermanent() ? Ban.BROADCAST_SILENT : Ban.BROADCAST_TEMPORARY_SILENT;
+
+            PunishmentMessageUtil.broadcastPunishment(normalKey, silentKey, punishment, silent);
+            issuer.sendMsg(config.getMessage(punishment.isPermanent() ? Ban.SUCCESS : Ban.SUCCESS_TEMPORARY, punishment.asTagResolver()));
+        });
 
     }
 

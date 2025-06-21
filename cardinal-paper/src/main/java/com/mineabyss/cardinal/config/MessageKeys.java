@@ -180,11 +180,17 @@ public final class MessageKeys {
 
         // Mute related messages
         public static final class Mute extends MessageKeyContainer {
+
             private static final Mute INSTANCE = new Mute();
 
             private Mute() {
                 super("mute", ROOT);
             }
+
+            public static final MessageKey ALREADY_MUTED = INSTANCE.createKey("already_muted", "<prefix> <dark_red>ERROR:</dark_red> <red>User "
+                    + "<target> "
+                    + "is already muted!");
+
 
             public static final MessageKey NOTIFICATION_PERMANENT = INSTANCE.createKey(
                     "notification_permanent",

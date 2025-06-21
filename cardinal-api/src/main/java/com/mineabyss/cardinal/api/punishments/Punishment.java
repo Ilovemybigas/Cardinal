@@ -181,7 +181,7 @@ public interface Punishment<T> extends DBEntity<String> {
     void setDuration(Duration duration);
 
     default boolean hasExpired() {
-        if(this.isPermanent()) return false;
+        if(this.isPermanent() || getExpiresAt() == null ) return false;
         Instant expiresAt = this.getExpiresAt();
         return !expiresAt.isAfter(Instant.now());
     }

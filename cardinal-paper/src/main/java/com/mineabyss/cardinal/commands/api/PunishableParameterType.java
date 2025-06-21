@@ -36,6 +36,10 @@ public final class PunishableParameterType extends BaseParameterType<BukkitSourc
         if(IPUtils.isValidIP(input)) {
             return PunishmentTargetFactory.ipTarget(input);
         }else if(TypeUtils.isUUID(input)) {
+            context.source().reply(
+                    Component.text("Attempting to fetch the player profile, this may take few seconds...", NamedTextColor.GREEN)
+                            .decorate(TextDecoration.ITALIC)
+            );
             OfflinePlayer playerByUUID = Bukkit.getOfflinePlayer(UUID.fromString(input));
             return PunishmentTargetFactory.playerTarget(playerByUUID);
         }else {

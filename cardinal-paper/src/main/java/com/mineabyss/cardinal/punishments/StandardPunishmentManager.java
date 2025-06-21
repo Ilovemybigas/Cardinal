@@ -26,7 +26,6 @@ import com.mineabyss.cardinal.util.IPUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.AbstractMap;
 import java.util.ArrayDeque;
 import java.util.Collection;
@@ -278,16 +277,17 @@ public class StandardPunishmentManager implements PunishmentManager {
                                 .and()
                                 .where("target.uuid").eq(playerId.toString())
                                 .and()
-                                // (expiresAt != null && expiresAt > now) || (expiresAt == null)
-                                .where("expiresAt").gt(Instant.now().toEpochMilli())
-                                .or()
-                                .where("expiresAt").eq(null)
-                                .and()
                                 .where("revoke-info").eq(null)
                                 .limit(1)
                                 .findFirst();
 
-                        loadedActivePunishment.ifPresent(this::updateActivePunishment);
+                        loadedActivePunishment.map((loadedPunishment)-> {
+                            if(loadedPunishment.hasExpired() ) {
+                                return null;
+                            }
+                            return loadedPunishment;
+                        }).ifPresent(this::updateActivePunishment);
+
                         return loadedActivePunishment;
                     } catch (StorageException e) {
                         e.printStackTrace();

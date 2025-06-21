@@ -1,5 +1,6 @@
 package com.mineabyss.cardinal.commands.punishments;
 
+import com.mineabyss.cardinal.util.Pair;
 import com.mineabyss.lib.commands.annotations.Command;
 import com.mineabyss.lib.commands.annotations.Dependency;
 import com.mineabyss.lib.commands.annotations.Description;
@@ -39,32 +40,42 @@ public class UnbanCommand {
     @Usage
     public void exec(
             PunishmentIssuer issuer,
-            @Named("user") @AllowsPunishmentID Punishable<?> target,
+            @Named("user") @AllowsPunishmentID CompletableFuture<Punishable<?>> targetFuture,
             @Optional @Greedy @Named("reason") String reason) {
 
-        target.fetchPunishment(StandardPunishmentType.BAN)
-                .thenCompose((punishmentContainer)-> {
+        targetFuture.thenApplyAsync((target)-> {
+            java.util.Optional<Punishment<?>> punishmentContainer =  target.fetchPunishment(StandardPunishmentType.BAN).unwrap().join();
+            return new Pair<>(target, punishmentContainer);
+        }).thenApplyAsync((data)-> {
 
-                    if(punishmentContainer.isEmpty()) {
-                        return CompletableFuture.completedFuture(false);
-                    }else {
+            var punishmentContainer = data.right();
+            Punishable<?> target = data.left();
 
-                        Punishment<?> punishment = punishmentContainer.get();
-                        return Cardinal.getInstance().getPunishmentManager()
-                                .revokePunishment(punishment.getId(), issuer, reason).unwrap();
-                    }
+            if(punishmentContainer.isEmpty()) {
+                return new Pair<>(false, target);
+            }else {
 
-                })
-                .onSuccess((revoked)-> {
-                    if(revoked) {
-                        //send success to user
-                        issuer.sendMsg(config.getMessage(MessageKeys.Punishments.Unban.NOT_BANNED, Placeholder.unparsed("target", target.getTargetName())));
-                        //issuer.sendMsg("<gray>Unbanned player <green>" + user.getName());
-                    }
-                    else {
-                        issuer.sendMsg(config.getMessage(MessageKeys.Punishments.Unban.SUCCESS, Placeholder.unparsed("target", target.getTargetName())));
-                    }
-                });
+                Punishment<?> punishment = punishmentContainer.get();
+                return Cardinal.getInstance().getPunishmentManager()
+                        .revokePunishment(punishment.getId(), issuer, reason)
+                        .map((revoked)-> new Pair<>(revoked, target))
+                        .unwrap()
+                        .join();
+            }
+
+        }).whenComplete((data, ex)-> {
+            if(ex != null) {ex.printStackTrace();}
+
+            var revoked = data.left();
+            var target = data.right();
+            if(revoked) {
+                issuer.sendMsg(config.getMessage(MessageKeys.Punishments.Unban.SUCCESS, Placeholder.unparsed("target", target.getTargetName())));
+            }
+            else {
+                issuer.sendMsg(config.getMessage(MessageKeys.Punishments.Unban.NOT_BANNED, Placeholder.unparsed("target", target.getTargetName())));
+            }
+        });
+
 
     }
 
