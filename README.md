@@ -2,7 +2,7 @@
 Cardinal is a professional punishment managing plugin designed to gather every essential moderation feature into one powerful suite.
 
 ## Setup Instructions
-1. **Download the Plugin**: Obtain the latest version of Cardinal Core from the [official repository](
+1. **Download the Plugin**: Obtain the latest version of [Cardinal](https://github.com/Mqzn/Cardinal/releases/tag/v1.0.0)
 2. **Install the Plugin**: Place the downloaded `.jar` file into your server's `plugins` directory.
 3. **Download Dependencies**: Ensure your server is running Paper v1.21.11 or higher, Java 21 or higher, and download [MLib](https://github.com/Mqzn/Cardinal/releases/tag/v1.0.0) jar and place it in 
    your `plugins` directory.
