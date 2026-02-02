@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "eg.mqzen"
-version = "1.0"
+version = "1.0.0"
 
 tasks.compileJava {
     options.encoding = "UTF-8"
