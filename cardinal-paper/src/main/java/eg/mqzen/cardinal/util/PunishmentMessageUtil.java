@@ -1,12 +1,12 @@
 package eg.mqzen.cardinal.util;
 
-import lombok.experimental.UtilityClass;
-import net.kyori.adventure.text.Component;
-import eg.mqzen.cardinal.api.config.MessageKey;
-import eg.mqzen.cardinal.api.punishments.Punishment;
 import eg.mqzen.cardinal.Cardinal;
 import eg.mqzen.cardinal.CardinalPermissions;
+import eg.mqzen.cardinal.api.config.MessageKey;
+import eg.mqzen.cardinal.api.punishments.Punishment;
 import eg.mqzen.cardinal.config.MessageKeys;
+import lombok.experimental.UtilityClass;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 

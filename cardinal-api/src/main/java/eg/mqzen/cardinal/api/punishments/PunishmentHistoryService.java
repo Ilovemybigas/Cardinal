@@ -1,7 +1,7 @@
 package eg.mqzen.cardinal.api.punishments;
 
-import eg.mqzen.cardinal.api.punishments.templates.TemplateId;
 import eg.mqzen.cardinal.api.util.FutureOperation;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Deque;
@@ -61,8 +61,6 @@ public interface PunishmentHistoryService {
         return getFullHistory(playerId, DEFAULT_HISTORY_FETCH_LIMIT);
     }
 
-
-    FutureOperation<Deque<Punishment<?>>> getPunishmentHistoryByTarget(Punishable<?> target, TemplateId templateId, int limit);
 
     // === Search & Query ===
 

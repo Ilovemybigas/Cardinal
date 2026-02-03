@@ -1,27 +1,28 @@
 package eg.mqzen.cardinal.commands.punishments;
 
-import eg.mqzen.cardinal.api.punishments.Punishment;
-import eg.mqzen.cardinal.util.Pair;
-import eg.mqzen.lib.commands.BukkitSource;
-import eg.mqzen.lib.commands.annotations.Command;
-import eg.mqzen.lib.commands.annotations.ContextResolved;
-import eg.mqzen.lib.commands.annotations.Dependency;
-import eg.mqzen.lib.commands.annotations.Greedy;
-import eg.mqzen.lib.commands.annotations.Named;
-import eg.mqzen.lib.commands.annotations.Optional;
-import eg.mqzen.lib.commands.annotations.Switch;
-import eg.mqzen.lib.commands.annotations.Usage;
-import eg.mqzen.lib.commands.context.ExecutionContext;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import eg.mqzen.cardinal.Cardinal;
 import eg.mqzen.cardinal.api.config.MessageConfig;
 import eg.mqzen.cardinal.api.config.MessageKey;
 import eg.mqzen.cardinal.api.punishments.Punishable;
+import eg.mqzen.cardinal.api.punishments.Punishment;
 import eg.mqzen.cardinal.api.punishments.PunishmentIssuer;
 import eg.mqzen.cardinal.api.punishments.StandardPunishmentType;
-import eg.mqzen.cardinal.Cardinal;
 import eg.mqzen.cardinal.commands.api.CardinalSource;
 import eg.mqzen.cardinal.config.MessageKeys;
+import eg.mqzen.cardinal.util.Pair;
 import eg.mqzen.cardinal.util.PunishmentMessageUtil;
+
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import studio.mevera.imperat.BukkitSource;
+import studio.mevera.imperat.annotations.Command;
+import studio.mevera.imperat.annotations.ContextResolved;
+import studio.mevera.imperat.annotations.Dependency;
+import studio.mevera.imperat.annotations.Greedy;
+import studio.mevera.imperat.annotations.Named;
+import studio.mevera.imperat.annotations.Optional;
+import studio.mevera.imperat.annotations.Switch;
+import studio.mevera.imperat.annotations.Usage;
+import studio.mevera.imperat.context.ExecutionContext;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;

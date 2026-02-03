@@ -1,23 +1,25 @@
 package eg.mqzen.cardinal.commands.api;
 
-import eg.mqzen.lib.commands.BukkitSource;
-import eg.mqzen.lib.commands.command.parameters.CommandParameter;
-import eg.mqzen.lib.commands.command.parameters.type.BaseParameterType;
-import eg.mqzen.lib.commands.context.ExecutionContext;
-import eg.mqzen.lib.commands.context.internal.CommandInputStream;
-import eg.mqzen.lib.commands.exception.ImperatException;
 import eg.mqzen.cardinal.api.punishments.Punishable;
 import eg.mqzen.cardinal.commands.api.exceptions.CardinalSourceException;
-import eg.mqzen.cardinal.util.PunishmentIDGenerator;
 import eg.mqzen.cardinal.punishments.target.PunishmentTargetFactory;
 import eg.mqzen.cardinal.util.IPUtils;
+import eg.mqzen.cardinal.util.PunishmentIDGenerator;
 import eg.mqzen.cardinal.util.TypeUtils;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
+import studio.mevera.imperat.BukkitSource;
+import studio.mevera.imperat.command.parameters.CommandParameter;
+import studio.mevera.imperat.command.parameters.type.BaseParameterType;
+import studio.mevera.imperat.context.ExecutionContext;
+import studio.mevera.imperat.context.internal.CommandInputStream;
+import studio.mevera.imperat.exception.ImperatException;
+
 import java.util.UUID;
 
 public final class PunishableParameterType extends BaseParameterType<BukkitSource, Punishable<?>> {

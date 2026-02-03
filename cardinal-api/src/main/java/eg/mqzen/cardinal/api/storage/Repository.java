@@ -1,7 +1,7 @@
 package eg.mqzen.cardinal.api.storage;
 
-import eg.mqzen.lib.commands.util.TypeWrap;
 import org.jetbrains.annotations.NotNull;
+import studio.mevera.imperat.util.TypeWrap;
 
 import java.util.List;
 import java.util.Optional;

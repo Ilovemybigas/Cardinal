@@ -1,10 +1,10 @@
 package eg.mqzen.cardinal.storage.mongo.mapping.adapter;
 
-import eg.mqzen.lib.bson.types.ObjectId;
-import eg.mqzen.lib.commands.util.TypeWrap;
 import eg.mqzen.cardinal.storage.mongo.mapping.DeserializationContext;
 import eg.mqzen.cardinal.storage.mongo.mapping.SerializationContext;
 import eg.mqzen.cardinal.storage.mongo.mapping.TypeAdapter;
+import org.bson.types.ObjectId;
+import studio.mevera.imperat.util.TypeWrap;
 
 public class ObjectIdTypeAdapter implements TypeAdapter<ObjectId> {
     @Override

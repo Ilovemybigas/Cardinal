@@ -3,8 +3,8 @@ package eg.mqzen.cardinal.punishments;
 import static eg.mqzen.cardinal.punishments.StandardPunishmentManager.PUNISHMENT_TYPE_WRAP;
 
 import eg.mqzen.cardinal.Cardinal;
-import eg.mqzen.cardinal.api.punishments.Punishable;
 import eg.mqzen.cardinal.api.punishments.Punishment;
+import eg.mqzen.cardinal.api.punishments.PunishmentHistoryService;
 import eg.mqzen.cardinal.api.punishments.PunishmentID;
 import eg.mqzen.cardinal.api.punishments.PunishmentIssuer;
 import eg.mqzen.cardinal.api.punishments.PunishmentManager;
@@ -12,15 +12,13 @@ import eg.mqzen.cardinal.api.punishments.PunishmentRevision;
 import eg.mqzen.cardinal.api.punishments.PunishmentSearchCriteria;
 import eg.mqzen.cardinal.api.punishments.PunishmentStatistics;
 import eg.mqzen.cardinal.api.punishments.PunishmentType;
-import eg.mqzen.cardinal.api.punishments.PunishmentHistoryService;
-import eg.mqzen.cardinal.api.punishments.templates.TemplateId;
 import eg.mqzen.cardinal.api.storage.QueryBuilder;
 import eg.mqzen.cardinal.api.storage.Repository;
 import eg.mqzen.cardinal.api.storage.StorageEngine;
 import eg.mqzen.cardinal.api.storage.StorageException;
 import eg.mqzen.cardinal.api.util.FutureOperation;
 import eg.mqzen.cardinal.punishments.core.StandardPunishment;
-import org.apache.commons.lang3.Validate;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayDeque;
@@ -29,6 +27,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -95,43 +94,6 @@ final class StandardPunishmentHistoryService implements PunishmentHistoryService
         }));
     }
 
-
-
-
-    @Override
-    public FutureOperation<Deque<Punishment<?>>> getPunishmentHistoryByTarget(Punishable<?> target, TemplateId templateId, int limit) {
-        //TODO implement
-        return FutureOperation.of(CompletableFuture.supplyAsync(()-> {
-            Deque<Punishment<?>> fullHistory = new ArrayDeque<>();
-
-            for (var punishmentRepo : manager.getPunishmentRepositories()) {
-                try {
-                    fullHistory.addAll(
-                            punishmentRepo.query()
-                                    .where("target.type").eq(target.getType().name())
-                                    .where("target.uuid").eq(target.getTargetUUID().toString())
-                                    .where("target.name").eq(target.getTargetName())
-                                    .execute()
-                    );
-                } catch (StorageException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-
-            if(limit == -1) {
-                return fullHistory;
-            }
-
-            Deque<Punishment<?>> trimmedHistory = new ArrayDeque<>();
-            for (int i = 0; i < limit; i++) {
-                Punishment<?> punishment = fullHistory.poll();
-                if(punishment == null || fullHistory.isEmpty()) break;
-                trimmedHistory.add(punishment);
-            }
-            return trimmedHistory;
-        }));
-    }
 
     /**
      * Searches for punishments by punisher (staff member who applied them).
@@ -589,8 +551,8 @@ final class StandardPunishmentHistoryService implements PunishmentHistoryService
      */
     @Override
     public FutureOperation<PunishmentStatistics> getPunishmentStatistics(UUID playerId, Instant since) {
-        Validate.notNull(playerId, "playerId cannot be null");
-        Validate.notNull(since, "since cannot be null");
+        Objects.requireNonNull(playerId, "playerId cannot be null");
+        Objects.requireNonNull(since, "since cannot be null");
 
         return FutureOperation.of(CompletableFuture.supplyAsync(() -> {
             PunishmentStatistics.Builder builder = PunishmentStatistics.builder(playerId);

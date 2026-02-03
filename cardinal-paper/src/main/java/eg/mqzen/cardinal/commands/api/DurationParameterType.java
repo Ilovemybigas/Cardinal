@@ -1,15 +1,17 @@
 package eg.mqzen.cardinal.commands.api;
 
-import eg.mqzen.lib.commands.BukkitSource;
-import eg.mqzen.lib.commands.command.parameters.OptionalValueSupplier;
-import eg.mqzen.lib.commands.command.parameters.type.BaseParameterType;
-import eg.mqzen.lib.commands.context.ExecutionContext;
-import eg.mqzen.lib.commands.context.internal.CommandInputStream;
-import eg.mqzen.lib.commands.exception.ImperatException;
-import eg.mqzen.lib.util.TimeUtil;
 import eg.mqzen.cardinal.commands.api.exceptions.CardinalSourceException;
+
+import eg.mqzen.cardinal.util.TimeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import studio.mevera.imperat.BukkitSource;
+import studio.mevera.imperat.command.parameters.OptionalValueSupplier;
+import studio.mevera.imperat.command.parameters.type.BaseParameterType;
+import studio.mevera.imperat.context.ExecutionContext;
+import studio.mevera.imperat.context.internal.CommandInputStream;
+import studio.mevera.imperat.exception.ImperatException;
+
 import java.time.Duration;
 
 public class DurationParameterType extends BaseParameterType<BukkitSource, Duration> {

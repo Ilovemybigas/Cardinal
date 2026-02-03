@@ -1,14 +1,13 @@
 package eg.mqzen.cardinal.api.storage;
 
-import eg.mqzen.lib.config.YamlDocument;
 
 /**
  * Factory for creating storage engines based on configuration
  */
-public interface StorageEngineFactory {
+public interface StorageEngineFactory<D> {
 
     StorageEngine create(StorageConfig config) throws StorageException;
 
-    StorageEngine createFromYaml(YamlDocument yaml) throws StorageException;
+    StorageEngine createFromYaml(D yaml) throws StorageException;
 
 }

@@ -1,8 +1,8 @@
 package eg.mqzen.cardinal.storage.mongo.mapping;
 
-import eg.mqzen.lib.commands.util.TypeWrap;
 import eg.mqzen.cardinal.storage.mongo.mapping.exception.DeserializationException;
 import eg.mqzen.cardinal.storage.mongo.mapping.exception.SerializationException;
+import studio.mevera.imperat.util.TypeWrap;
 
 /**
  * Base interface for type adapters that handle serialization/deserialization

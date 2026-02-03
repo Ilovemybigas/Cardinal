@@ -1,10 +1,12 @@
 package eg.mqzen.cardinal.storage.mysql;
 
-import eg.mqzen.lib.hikari.HikariConfig;
-import eg.mqzen.lib.hikari.HikariDataSource;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import eg.mqzen.cardinal.api.storage.StorageConfig;
+
 import java.sql.Connection;
 import java.sql.SQLException;
+
 import javax.sql.DataSource;
 
 /**

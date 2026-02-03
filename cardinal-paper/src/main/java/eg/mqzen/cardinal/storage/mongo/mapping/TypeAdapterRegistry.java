@@ -1,6 +1,5 @@
 package eg.mqzen.cardinal.storage.mongo.mapping;
 
-import eg.mqzen.lib.commands.util.TypeWrap;
 import eg.mqzen.cardinal.storage.mongo.mapping.adapter.ArrayTypeAdapter;
 import eg.mqzen.cardinal.storage.mongo.mapping.adapter.BooleanTypeAdapter;
 import eg.mqzen.cardinal.storage.mongo.mapping.adapter.CollectionTypeAdapter;
@@ -9,6 +8,8 @@ import eg.mqzen.cardinal.storage.mongo.mapping.adapter.NumberTypeAdapter;
 import eg.mqzen.cardinal.storage.mongo.mapping.adapter.ObjectIdTypeAdapter;
 import eg.mqzen.cardinal.storage.mongo.mapping.adapter.StringTypeAdapter;
 import eg.mqzen.cardinal.storage.mongo.mapping.adapter.punishment.PunishmentAdapter;
+import studio.mevera.imperat.util.TypeWrap;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;

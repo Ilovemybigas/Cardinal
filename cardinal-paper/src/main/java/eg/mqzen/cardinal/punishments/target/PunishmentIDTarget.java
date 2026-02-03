@@ -1,6 +1,5 @@
 package eg.mqzen.cardinal.punishments.target;
 
-import net.kyori.adventure.text.Component;
 import eg.mqzen.cardinal.api.CardinalProvider;
 import eg.mqzen.cardinal.api.punishments.Punishable;
 import eg.mqzen.cardinal.api.punishments.PunishableType;
@@ -9,7 +8,7 @@ import eg.mqzen.cardinal.api.punishments.PunishmentID;
 import eg.mqzen.cardinal.api.punishments.PunishmentType;
 import eg.mqzen.cardinal.api.util.FutureOperation;
 import eg.mqzen.cardinal.punishments.core.StandardPunishmentID;
-import org.bukkit.OfflinePlayer;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
@@ -71,11 +70,6 @@ final class PunishmentIDTarget implements Punishable<PunishmentID> {
 
     @Override
     public void sendMsg(Component component) {
-        throw new UnsupportedOperationException("Not allowed in PunishmentIDs");
-    }
-
-    @Override
-    public OfflinePlayer asOfflinePlayer() {
         throw new UnsupportedOperationException("Not allowed in PunishmentIDs");
     }
 

@@ -1,11 +1,14 @@
 package eg.mqzen.cardinal.api.punishments;
 
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Represents a revision/change made to a punishment record.
@@ -105,7 +108,7 @@ public final class PunishmentRevision {
      * @return the metadata value, or null if not present
      */
     public @Nullable String getMetadata(@NotNull String key) {
-        Validate.notNull(key, "key cannot be null");
+        Objects.requireNonNull(key);
         return metadata.get(key);
     }
 
@@ -232,16 +235,14 @@ public final class PunishmentRevision {
         }
 
         public @NotNull Builder addMetadata(@NotNull String key, @NotNull String value) {
-            Validate.notNull(key, "key cannot be null");
-            Validate.notNull(value, "value cannot be null");
+            Objects.requireNonNull(key, "key cannot be null");
+            Objects.requireNonNull(value, "value cannot be null");
             this.metadata.put(key, value);
             return this;
         }
 
         public @NotNull Builder metadata(@NotNull Map<String, String> metadata) {
-            Validate.notNull(metadata, "metadata cannot be null");
-            Validate.noNullElements(metadata.keySet(), "metadata keys cannot be null");
-            Validate.noNullElements(metadata.values(), "metadata values cannot be null");
+            Objects.requireNonNull(metadata, "metadata cannot be null");
             this.metadata.clear();
             this.metadata.putAll(metadata);
             return this;

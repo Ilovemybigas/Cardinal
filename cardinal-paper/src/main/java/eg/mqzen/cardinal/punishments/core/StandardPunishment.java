@@ -1,8 +1,5 @@
 package eg.mqzen.cardinal.punishments.core;
 
-import eg.mqzen.lib.util.TimeUtil;
-import net.kyori.adventure.text.minimessage.tag.Tag;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import eg.mqzen.cardinal.api.punishments.Punishable;
 import eg.mqzen.cardinal.api.punishments.Punishment;
 import eg.mqzen.cardinal.api.punishments.PunishmentID;
@@ -10,9 +7,13 @@ import eg.mqzen.cardinal.api.punishments.PunishmentIssuer;
 import eg.mqzen.cardinal.api.punishments.PunishmentRevision;
 import eg.mqzen.cardinal.api.punishments.PunishmentType;
 import eg.mqzen.cardinal.storage.mongo.mapping.ExcludeField;
+import eg.mqzen.cardinal.util.TimeUtil;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -264,7 +265,7 @@ public final class StandardPunishment<T> implements Punishment<T> {
      */
     @Override
     public void revoke(@NotNull RevocationInfo revocationInfo) {
-        Validate.notNull(revocationInfo, "revocationInfo cannot be null");
+        Objects.requireNonNull(revocationInfo, "revocationInfo cannot be null");
         this.revocationInfo = revocationInfo;
 
         addRevision(PunishmentRevision.builder(this.id, PunishmentRevision.RevisionType.REVOKED)
@@ -316,7 +317,7 @@ public final class StandardPunishment<T> implements Punishment<T> {
      */
     @Override
     public void addRevision(@NotNull PunishmentRevision revision) {
-        Validate.notNull(revision, "revision cannot be null");
+        Objects.requireNonNull(revision, "revision cannot be null");
         revisions.add(revision);
     }
 

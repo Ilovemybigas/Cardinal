@@ -1,6 +1,5 @@
 package eg.mqzen.cardinal.punishments.target;
 
-import net.kyori.adventure.text.Component;
 import eg.mqzen.cardinal.api.CardinalProvider;
 import eg.mqzen.cardinal.api.punishments.Punishable;
 import eg.mqzen.cardinal.api.punishments.PunishableType;
@@ -8,11 +7,12 @@ import eg.mqzen.cardinal.api.punishments.Punishment;
 import eg.mqzen.cardinal.api.punishments.PunishmentType;
 import eg.mqzen.cardinal.api.util.FutureOperation;
 import eg.mqzen.cardinal.util.IPUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
@@ -118,16 +118,6 @@ final class IPTarget implements Punishable<String> {
                 player.sendMessage(component);
             }
         }
-    }
-
-    @Override
-    public @Nullable OfflinePlayer asOfflinePlayer() {
-        for(Player player : Bukkit.getOnlinePlayers()) {
-            if(Objects.requireNonNull(player.getAddress()).getAddress().getHostAddress().equals(ipAddress)) {
-                return player;
-            }
-        }
-        return null;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package eg.mqzen.cardinal.storage;
 
-import eg.mqzen.lib.config.YamlDocument;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import eg.mqzen.cardinal.api.storage.StorageConfig;
 import eg.mqzen.cardinal.api.storage.StorageEngine;
 import eg.mqzen.cardinal.api.storage.StorageEngineFactory;

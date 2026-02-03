@@ -1,6 +1,6 @@
 package eg.mqzen.cardinal.api.storage;
 
-import eg.mqzen.lib.commands.util.TypeWrap;
+import studio.mevera.imperat.util.TypeWrap;
 
 /**
  * Storage event record

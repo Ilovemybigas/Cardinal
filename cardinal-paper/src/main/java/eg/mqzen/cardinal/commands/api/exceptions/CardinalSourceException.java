@@ -1,8 +1,8 @@
 package eg.mqzen.cardinal.commands.api.exceptions;
 
-import eg.mqzen.lib.commands.context.Context;
-import eg.mqzen.lib.commands.exception.ImperatException;
 import lombok.Getter;
+import studio.mevera.imperat.context.Context;
+import studio.mevera.imperat.exception.ImperatException;
 
 public final class CardinalSourceException extends ImperatException {
 

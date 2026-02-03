@@ -1,10 +1,9 @@
 package eg.mqzen.cardinal.storage.mongo.mapping;
 
-
-import eg.mqzen.lib.commands.util.TypeWrap;
 import eg.mqzen.cardinal.storage.mongo.mapping.exception.DeserializationException;
+import studio.mevera.imperat.util.TypeWrap;
 
-class DeserializationContextImpl implements DeserializationContext {
+public class DeserializationContextImpl implements DeserializationContext {
     private final DocumentMapper<?> mapper;
     private final int depth;
     

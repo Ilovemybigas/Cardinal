@@ -1,13 +1,15 @@
 package eg.mqzen.cardinal.storage.mongo;
 
-import eg.mqzen.lib.bson.Document;
-import eg.mqzen.lib.bson.conversions.Bson;
-import eg.mqzen.lib.mongo.client.FindIterable;
-import eg.mqzen.lib.mongo.client.MongoCollection;
+
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 import eg.mqzen.cardinal.api.storage.QueryBuilder;
 import eg.mqzen.cardinal.api.storage.StorageException;
 import eg.mqzen.cardinal.api.storage.StorageMetrics;
 import eg.mqzen.cardinal.storage.mongo.mapping.DocumentMapper;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

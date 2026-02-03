@@ -1,16 +1,16 @@
 package eg.mqzen.cardinal.punishments.target;
 
-import net.kyori.adventure.text.Component;
 import eg.mqzen.cardinal.api.CardinalProvider;
 import eg.mqzen.cardinal.api.punishments.Punishable;
 import eg.mqzen.cardinal.api.punishments.PunishableType;
 import eg.mqzen.cardinal.api.punishments.Punishment;
 import eg.mqzen.cardinal.api.punishments.PunishmentType;
 import eg.mqzen.cardinal.api.util.FutureOperation;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -119,10 +119,6 @@ final class PlayerTarget implements Punishable<UUID> {
         }
     }
 
-    @NotNull @Override
-    public OfflinePlayer asOfflinePlayer() {
-        return Bukkit.getOfflinePlayer(playerUUID);
-    }
 
     @Override
     public FutureOperation<Optional<Punishment<?>>> fetchPunishment(PunishmentType punishmentType) {

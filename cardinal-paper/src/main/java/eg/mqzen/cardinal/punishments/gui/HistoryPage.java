@@ -1,14 +1,15 @@
 package eg.mqzen.cardinal.punishments.gui;
 
-import eg.mqzen.lib.gui.base.Content;
-import eg.mqzen.lib.gui.base.pagination.FillRange;
-import eg.mqzen.lib.gui.base.pagination.Page;
-import eg.mqzen.lib.gui.base.pagination.Pagination;
-import eg.mqzen.lib.gui.misc.Capacity;
-import eg.mqzen.lib.gui.misc.DataRegistry;
-import eg.mqzen.lib.gui.misc.itembuilder.LegacyItemBuilder;
-import eg.mqzen.lib.gui.titles.MenuTitle;
-import eg.mqzen.lib.gui.titles.MenuTitles;
+
+import io.github.mqzen.menus.base.Content;
+import io.github.mqzen.menus.base.pagination.FillRange;
+import io.github.mqzen.menus.base.pagination.Page;
+import io.github.mqzen.menus.base.pagination.Pagination;
+import io.github.mqzen.menus.misc.Capacity;
+import io.github.mqzen.menus.misc.DataRegistry;
+import io.github.mqzen.menus.misc.itembuilder.LegacyItemBuilder;
+import io.github.mqzen.menus.titles.MenuTitle;
+import io.github.mqzen.menus.titles.MenuTitles;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

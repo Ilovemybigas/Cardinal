@@ -8,9 +8,6 @@ import eg.mqzen.cardinal.api.punishments.PunishmentID;
 import eg.mqzen.cardinal.api.punishments.PunishmentIssuer;
 import eg.mqzen.cardinal.api.punishments.PunishmentType;
 import eg.mqzen.cardinal.api.punishments.StandardPunishmentType;
-import eg.mqzen.lib.bson.Document;
-import eg.mqzen.lib.commands.util.TypeWrap;
-import eg.mqzen.lib.util.TimeUtil;
 import eg.mqzen.cardinal.punishments.core.StandardPunishment;
 import eg.mqzen.cardinal.punishments.core.StandardPunishmentID;
 import eg.mqzen.cardinal.punishments.issuer.ConsoleIssuer;
@@ -21,10 +18,16 @@ import eg.mqzen.cardinal.storage.mongo.mapping.SerializationContext;
 import eg.mqzen.cardinal.storage.mongo.mapping.TypeAdapter;
 import eg.mqzen.cardinal.storage.mongo.mapping.exception.DeserializationException;
 import eg.mqzen.cardinal.storage.mongo.mapping.exception.SerializationException;
+
+import eg.mqzen.cardinal.util.TimeUtil;
+import org.bson.Document;
 import org.jetbrains.annotations.Nullable;
+import studio.mevera.imperat.util.TypeWrap;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -83,7 +86,7 @@ public class PunishmentAdapter implements TypeAdapter<Punishment<?>> {
         if(value.isPermanent()) {
             document.append(EXPIRES_AT_FIELD, null);
         }else {
-            document.append(EXPIRES_AT_FIELD, value.getExpiresAt().toEpochMilli());
+            document.append(EXPIRES_AT_FIELD, Objects.requireNonNull(value.getExpiresAt()).toEpochMilli());
         }
         document.append(REVOCATION_INFO_FIELD, revocationToDoc(value.getRevocationInfo().orElse(null)));
 

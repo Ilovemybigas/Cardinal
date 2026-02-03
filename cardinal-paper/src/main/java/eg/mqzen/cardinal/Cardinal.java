@@ -1,14 +1,6 @@
 package eg.mqzen.cardinal;
 
-import eg.mqzen.lib.ConfigLoader;
-import eg.mqzen.lib.Events;
-import eg.mqzen.lib.bootstrap.MPlugin;
-import eg.mqzen.lib.commands.BukkitImperat;
-import eg.mqzen.lib.commands.BukkitSource;
-import eg.mqzen.lib.commands.context.ExecutionContext;
-import eg.mqzen.lib.commands.util.TypeWrap;
-import eg.mqzen.lib.gui.Lotus;
-import lombok.Getter;
+import com.alessiodp.libby.PaperLibraryManager;
 import eg.mqzen.cardinal.api.CardinalAPI;
 import eg.mqzen.cardinal.api.CardinalProvider;
 import eg.mqzen.cardinal.api.config.MessageConfig;
@@ -16,15 +8,15 @@ import eg.mqzen.cardinal.api.punishments.Punishable;
 import eg.mqzen.cardinal.api.punishments.PunishmentIssuer;
 import eg.mqzen.cardinal.api.punishments.PunishmentManager;
 import eg.mqzen.cardinal.api.storage.StorageException;
-import eg.mqzen.cardinal.commands.api.PunishableParameterType;
-import eg.mqzen.cardinal.commands.punishments.HistoryCommand;
-import eg.mqzen.cardinal.commands.punishments.KickCommand;
-import eg.mqzen.cardinal.commands.punishments.UnMuteCommand;
 import eg.mqzen.cardinal.commands.api.CardinalSource;
 import eg.mqzen.cardinal.commands.api.DurationParameterType;
+import eg.mqzen.cardinal.commands.api.PunishableParameterType;
 import eg.mqzen.cardinal.commands.api.exceptions.CardinalSourceException;
 import eg.mqzen.cardinal.commands.punishments.BanCommand;
+import eg.mqzen.cardinal.commands.punishments.HistoryCommand;
+import eg.mqzen.cardinal.commands.punishments.KickCommand;
 import eg.mqzen.cardinal.commands.punishments.MuteCommand;
+import eg.mqzen.cardinal.commands.punishments.UnMuteCommand;
 import eg.mqzen.cardinal.commands.punishments.UnbanCommand;
 import eg.mqzen.cardinal.commands.punishments.WarnCommand;
 import eg.mqzen.cardinal.config.YamlMessageConfig;
@@ -32,8 +24,16 @@ import eg.mqzen.cardinal.listener.BanListener;
 import eg.mqzen.cardinal.listener.MuteListener;
 import eg.mqzen.cardinal.punishments.StandardPunishmentManager;
 import eg.mqzen.cardinal.punishments.issuer.PunishmentIssuerFactory;
+import eg.mqzen.cardinal.util.ConfigLoader;
+import eg.mqzen.cardinal.util.Events;
+import io.github.mqzen.menus.Lotus;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+import studio.mevera.imperat.BukkitImperat;
+import studio.mevera.imperat.BukkitSource;
+import studio.mevera.imperat.context.ExecutionContext;
+import studio.mevera.imperat.util.TypeWrap;
 
 import java.time.Duration;
 
@@ -97,6 +97,10 @@ public final class Cardinal extends MPlugin implements CardinalAPI {
     protected void onPreStart() {
         instance = this;
         CardinalProvider.load(instance);
+        //load dependencies
+        PaperLibraryManager libManager = new PaperLibraryManager(this);
+        libManager.loadLibraries(CardinalLibs.ALL);
+
 
         this.configLoader = ConfigLoader.builder("config.yml")
                 .parentDirectory(getDataFolder())

@@ -1,7 +1,7 @@
 package eg.mqzen.cardinal.commands.api;
 
-import eg.mqzen.lib.commands.BukkitSource;
 import lombok.RequiredArgsConstructor;
+import studio.mevera.imperat.BukkitSource;
 
 @RequiredArgsConstructor
 public final class CardinalSource {

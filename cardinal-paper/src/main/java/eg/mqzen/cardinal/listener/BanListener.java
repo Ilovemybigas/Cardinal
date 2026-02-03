@@ -1,17 +1,18 @@
 package eg.mqzen.cardinal.listener;
 
-import net.kyori.adventure.text.Component;
+import eg.mqzen.cardinal.Cardinal;
 import eg.mqzen.cardinal.api.CardinalProvider;
 import eg.mqzen.cardinal.api.punishments.Punishment;
 import eg.mqzen.cardinal.api.punishments.PunishmentScanResult;
 import eg.mqzen.cardinal.api.punishments.StandardPunishmentType;
-import eg.mqzen.cardinal.Cardinal;
 import eg.mqzen.cardinal.punishments.issuer.PunishmentIssuerFactory;
 import eg.mqzen.cardinal.util.PunishmentMessageUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+
 import java.util.Optional;
 import java.util.UUID;
 

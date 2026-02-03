@@ -1,6 +1,6 @@
 package eg.mqzen.cardinal.config;
 
-import eg.mqzen.lib.config.YamlDocument;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import eg.mqzen.cardinal.api.config.MessageConfig;
 
 import java.util.Objects;

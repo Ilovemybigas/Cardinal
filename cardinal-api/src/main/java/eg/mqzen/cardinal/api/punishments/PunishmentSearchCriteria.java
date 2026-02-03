@@ -6,7 +6,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Immutable criteria builder for advanced punishment searching.
@@ -217,10 +221,10 @@ public final class PunishmentSearchCriteria {
         }
 
         public @NotNull Builder issuedBetween(@NotNull Instant after, @NotNull Instant before) {
-            Validate.notNull(after, "issuedAfter cannot be null");
-            Validate.notNull(before, "issuedBefore cannot be null");
+            Objects.requireNonNull(after, "issuedAfter cannot be null");
+            Objects.requireNonNull(before, "issuedBefore cannot be null");
             Validate.isTrue(after.isBefore(before), "issuedAfter must be before issuedBefore");
-            
+
             this.issuedAfter = after;
             this.issuedBefore = before;
             return this;
@@ -237,8 +241,8 @@ public final class PunishmentSearchCriteria {
         }
 
         public @NotNull Builder expiresBetween(@NotNull Instant after, @NotNull Instant before) {
-            Validate.notNull(after, "expiresAfter cannot be null");
-            Validate.notNull(before, "expiresBefore cannot be null");
+            Objects.requireNonNull(after, "expiresAfter cannot be null");
+            Objects.requireNonNull(before, "expiresBefore cannot be null");
             Validate.isTrue(after.isBefore(before), "expiresAfter must be before expiresBefore");
             
             this.expiresAfter = after;
@@ -263,8 +267,8 @@ public final class PunishmentSearchCriteria {
         }
 
         public @NotNull Builder durationBetween(@NotNull Duration min, @NotNull Duration max) {
-            Validate.notNull(min, "minDuration cannot be null");
-            Validate.notNull(max, "maxDuration cannot be null");
+            Objects.requireNonNull(min, "minDuration cannot be null");
+            Objects.requireNonNull(max, "maxDuration cannot be null");
             Validate.isTrue(!min.isNegative(), "minDuration cannot be negative");
             Validate.isTrue(!max.isNegative(), "maxDuration cannot be negative");
             Validate.isTrue(min.compareTo(max) <= 0, "minDuration must be less than or equal to maxDuration");
@@ -285,13 +289,13 @@ public final class PunishmentSearchCriteria {
         }
 
         public @NotNull Builder excludeType(@NotNull PunishmentType type) {
-            Validate.notNull(type, "type cannot be null");
+            Objects.requireNonNull(type, "type cannot be null");
             this.excludeTypes.add(type);
             return this;
         }
 
         public @NotNull Builder excludeTypes(@NotNull Collection<PunishmentType> types) {
-            Validate.notNull(types, "types cannot be null");
+            Objects.requireNonNull(types, "types cannot be null");
             Validate.noNullElements(types, "types cannot contain null elements");
             this.excludeTypes.addAll(types);
             return this;

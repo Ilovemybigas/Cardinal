@@ -1,12 +1,13 @@
 package eg.mqzen.cardinal.storage.mysql;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.sql.DataSource;
 
 /**
  * Manages MySQL schema operations including table creation and validation.

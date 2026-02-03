@@ -1,11 +1,11 @@
 package eg.mqzen.cardinal.punishments.gui;
 
 import eg.mqzen.cardinal.Cardinal;
-import eg.mqzen.lib.gui.base.pagination.PageComponent;
-import eg.mqzen.lib.gui.base.pagination.PageView;
-import eg.mqzen.lib.gui.misc.itembuilder.LegacyItemBuilder;
-import eg.mqzen.lib.util.TimeUtil;
 import eg.mqzen.cardinal.api.punishments.Punishment;
+import eg.mqzen.cardinal.util.TimeUtil;
+import io.github.mqzen.menus.base.pagination.PageComponent;
+import io.github.mqzen.menus.base.pagination.PageView;
+import io.github.mqzen.menus.misc.itembuilder.LegacyItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -72,8 +72,7 @@ public final class PunishmentPageComponent implements PageComponent {
             lore.add("&7Status: &aRevoked");
             punishment.getRevocationInfo().ifPresent(info -> {
                 lore.add("&7Revoked by: &f" + info.getRevoker().getName());
-                String revokeReason = info.getReason() == null ? "N/A" : info.getReason();
-                lore.add("&7Revoke reason: &f" + (info.getReason() == null ? "N/A" : info.getReason()));
+                lore.add("&7Revoke reason: &f" + info.getReason());
             });
         } else if (punishment.hasExpired()) {
             lore.add("&7Status: &eExpired");

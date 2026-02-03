@@ -1,16 +1,17 @@
 package eg.mqzen.cardinal.listener;
 
 import eg.mqzen.cardinal.Cardinal;
-import io.papermc.paper.event.player.AsyncChatEvent;
 import eg.mqzen.cardinal.api.CardinalProvider;
 import eg.mqzen.cardinal.api.punishments.PunishmentScanResult;
 import eg.mqzen.cardinal.api.punishments.StandardPunishmentType;
 import eg.mqzen.cardinal.util.PunishmentMessageUtil;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+
 import java.util.List;
 import java.util.Objects;
 

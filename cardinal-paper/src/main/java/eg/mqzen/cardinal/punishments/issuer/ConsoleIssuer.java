@@ -1,8 +1,8 @@
 package eg.mqzen.cardinal.punishments.issuer;
 
-import net.kyori.adventure.text.Component;
 import eg.mqzen.cardinal.api.punishments.IssuerType;
 import eg.mqzen.cardinal.api.punishments.PunishmentIssuer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 

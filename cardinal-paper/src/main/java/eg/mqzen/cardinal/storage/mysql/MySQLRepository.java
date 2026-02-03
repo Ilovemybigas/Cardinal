@@ -1,6 +1,5 @@
 package eg.mqzen.cardinal.storage.mysql;
 
-import eg.mqzen.lib.commands.util.TypeWrap;
 import eg.mqzen.cardinal.api.storage.BatchOperation;
 import eg.mqzen.cardinal.api.storage.DBEntity;
 import eg.mqzen.cardinal.api.storage.QueryBuilder;
@@ -11,6 +10,7 @@ import eg.mqzen.cardinal.api.storage.StorageException;
 import eg.mqzen.cardinal.api.storage.StorageMetrics;
 import eg.mqzen.cardinal.api.storage.StorageObserver;
 import org.jetbrains.annotations.NotNull;
+import studio.mevera.imperat.util.TypeWrap;
 import tools.jackson.databind.ObjectMapper;
 
 import java.lang.reflect.Field;

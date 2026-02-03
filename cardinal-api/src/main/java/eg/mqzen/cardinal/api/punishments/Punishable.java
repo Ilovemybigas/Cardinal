@@ -1,8 +1,7 @@
 package eg.mqzen.cardinal.api.punishments;
 
-import net.kyori.adventure.text.Component;
 import eg.mqzen.cardinal.api.util.FutureOperation;
-import org.bukkit.OfflinePlayer;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
@@ -62,8 +61,6 @@ public interface Punishable<T> {
     void sendMsg(String msg);
 
     void sendMsg(Component component);
-
-    OfflinePlayer asOfflinePlayer();
 
     FutureOperation<Optional<Punishment<?>>> fetchPunishment(PunishmentType punishmentType);
 }

@@ -1,11 +1,8 @@
 package eg.mqzen.cardinal.storage.mysql;
 
-import eg.mqzen.lib.commands.util.TypeUtility;
-import eg.mqzen.lib.commands.util.TypeWrap;
-import eg.mqzen.lib.hikari.HikariConfig;
-import eg.mqzen.lib.hikari.HikariDataSource;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import eg.mqzen.cardinal.api.storage.DBEntity;
-import eg.mqzen.cardinal.api.storage.HealthStatus;
 import eg.mqzen.cardinal.api.storage.QueryBuilder;
 import eg.mqzen.cardinal.api.storage.Repository;
 import eg.mqzen.cardinal.api.storage.StorageCommand;
@@ -17,6 +14,9 @@ import eg.mqzen.cardinal.api.storage.StorageObserver;
 import eg.mqzen.cardinal.api.storage.StorageType;
 import eg.mqzen.cardinal.storage.MultiRepositoryQueryBuilder;
 import eg.mqzen.cardinal.storage.StorageMetricsImpl;
+import studio.mevera.imperat.util.TypeUtility;
+import studio.mevera.imperat.util.TypeWrap;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -152,19 +152,6 @@ public class MySQLStorageEngine implements StorageEngine {
                 throw new RuntimeException(e);
             }
         }, asyncExecutor);
-    }
-    
-    @Override
-    public HealthStatus getHealthStatus() {
-        try (Connection conn = dataSource.getConnection()) {
-            if (conn.isValid(5)) {
-                return new HealthStatus(true, "MySQL connection is healthy", null);
-            } else {
-                return new HealthStatus(false, "MySQL connection is not valid", null);
-            }
-        } catch (SQLException e) {
-            return new HealthStatus(false, "Failed to check MySQL connection", e.getMessage());
-        }
     }
     
     @Override

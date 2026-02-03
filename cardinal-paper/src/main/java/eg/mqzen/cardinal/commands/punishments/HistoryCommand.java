@@ -1,16 +1,17 @@
 package eg.mqzen.cardinal.commands.punishments;
 
 
-import eg.mqzen.lib.commands.annotations.Command;
-import eg.mqzen.lib.commands.annotations.Usage;
-import eg.mqzen.lib.gui.base.pagination.PageComponent;
-import eg.mqzen.lib.gui.base.pagination.Pagination;
-import eg.mqzen.lib.gui.base.pagination.exception.InvalidPageException;
-import eg.mqzen.cardinal.api.punishments.Punishment;
 import eg.mqzen.cardinal.Cardinal;
+import eg.mqzen.cardinal.api.punishments.Punishment;
 import eg.mqzen.cardinal.punishments.gui.HistoryPage;
 import eg.mqzen.cardinal.punishments.gui.PunishmentPageComponent;
+import io.github.mqzen.menus.base.pagination.PageComponent;
+import io.github.mqzen.menus.base.pagination.Pagination;
+import io.github.mqzen.menus.base.pagination.exception.InvalidPageException;
 import org.bukkit.entity.Player;
+import studio.mevera.imperat.annotations.Command;
+import studio.mevera.imperat.annotations.Usage;
+
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;

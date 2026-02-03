@@ -1,13 +1,13 @@
 package eg.mqzen.cardinal.storage;
 
 
-import eg.mqzen.lib.config.YamlDocument;
+import dev.dejvokep.boostedyaml.YamlDocument;
+import eg.mqzen.cardinal.Cardinal;
 import eg.mqzen.cardinal.api.storage.StorageConfig;
 import eg.mqzen.cardinal.api.storage.StorageEngine;
 import eg.mqzen.cardinal.api.storage.StorageEngineFactory;
 import eg.mqzen.cardinal.api.storage.StorageException;
 import eg.mqzen.cardinal.api.storage.StorageType;
-import eg.mqzen.cardinal.Cardinal;
 import eg.mqzen.cardinal.storage.mongo.MongoStorageEngine;
 import eg.mqzen.cardinal.storage.mysql.MySQLStorageEngine;
 
@@ -16,13 +16,13 @@ import eg.mqzen.cardinal.storage.mysql.MySQLStorageEngine;
  * 
  * @since 1.0
  */
-public final class DefaultStorageEngineFactory implements StorageEngineFactory {
+public final class DefaultStorageEngineFactory implements StorageEngineFactory<YamlDocument> {
     
-    private static final StorageEngineFactory INSTANCE = new DefaultStorageEngineFactory();
+    private static final StorageEngineFactory<YamlDocument> INSTANCE = new DefaultStorageEngineFactory();
     
     private DefaultStorageEngineFactory() {}
     
-    public static StorageEngineFactory getInstance() {
+    public static StorageEngineFactory<YamlDocument> getInstance() {
         return INSTANCE;
     }
     
@@ -60,7 +60,7 @@ public final class DefaultStorageEngineFactory implements StorageEngineFactory {
                     autoCommit: false
         */
         try {
-            StorageConfig config = loadStorageConfig(yaml);
+            StorageConfig config = loadStorageConfig((YamlDocument) yaml);
             if( config == null) {
                 Cardinal.severe("Failed to create StorageConfig instance.");
                 throw new StorageException("Failed to create storage engine from config.yml");

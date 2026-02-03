@@ -1,6 +1,5 @@
 package eg.mqzen.cardinal;
 
-import eg.mqzen.lib.bootstrap.MPluginBoot;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.bootstrap.PluginProviderContext;

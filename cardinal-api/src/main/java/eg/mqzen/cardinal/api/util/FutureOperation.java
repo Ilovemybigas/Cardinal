@@ -1,10 +1,6 @@
 package eg.mqzen.cardinal.api.util;
 
-import net.kyori.adventure.text.Component;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -119,73 +115,7 @@ public final class FutureOperation<T> {
         });
         return this;
     }
-    
-    /**
-     * Send a message to CommandSender on success
-     */
-    public FutureOperation<T> sendMessage(CommandSender sender, String successMessage) {
-        return onSuccess(result -> sender.sendRichMessage(successMessage));
-    }
-    
-    /**
-     * Send a message to CommandSender on success (for Void futures)
-     */
-    public FutureOperation<T> sendMessageOnSuccess(CommandSender sender, String successMessage) {
-        return onSuccess(() -> sender.sendRichMessage(successMessage));
-    }
 
-    /**
-     * Send a message to CommandSender on success (for Void futures)
-     */
-    public FutureOperation<T> sendMessageOnSuccess(CommandSender sender, Component successMessage) {
-        return onSuccess(() -> sender.sendMessage(successMessage));
-    }
-
-
-    /**
-     * Send messages on both success and error
-     */
-    public FutureOperation<T> sendMessages(CommandSender sender, String successMessage, String errorMessage) {
-        return handle(
-            result -> sender.sendRichMessage(successMessage),
-            ex -> {
-                ex.printStackTrace();
-                if (sender == null || (sender instanceof Player playerSender && !playerSender.isOnline())) {
-                    return; // Avoid NPE if sender is null
-                }
-                sender.sendRichMessage(errorMessage);
-            }
-        );
-    }
-    
-    /**
-     * Send messages on both success and error (for Void futures)
-     */
-        public FutureOperation<T> sendMessagesOnComplete(CommandSender sender, String successMessage, String errorMessage) {
-        return handle(
-            () -> sender.sendRichMessage(successMessage),
-            ex -> {
-                ex.printStackTrace();
-                if (sender == null || (sender instanceof Player playerSender && !playerSender.isOnline())) {
-                    return; // Avoid NPE if sender is null
-                }
-                sender.sendRichMessage(errorMessage);
-            }
-        );
-    }
-    
-    /**
-     * Send error message to CommandSender on error
-     */
-    public FutureOperation<T> sendErrorMessage(CommandSender sender, String errorMessage) {
-        return onError(ex -> {
-            ex.printStackTrace();
-            if (sender == null || (sender instanceof Player playerSender && !playerSender.isOnline())) {
-                return; // Avoid NPE if sender is null
-            }
-            sender.sendRichMessage(errorMessage);
-        });
-    }
     
     /**
      * Only handle errors with printStackTrace (no success callback)

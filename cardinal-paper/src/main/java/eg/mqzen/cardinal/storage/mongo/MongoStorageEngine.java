@@ -1,15 +1,11 @@
 package eg.mqzen.cardinal.storage.mongo;
 
-import eg.mqzen.cardinal.api.storage.QueryBuilder;
-import eg.mqzen.cardinal.storage.MultiRepositoryQueryBuilder;
-import eg.mqzen.lib.bson.Document;
-import eg.mqzen.lib.commands.util.TypeUtility;
-import eg.mqzen.lib.commands.util.TypeWrap;
-import eg.mqzen.lib.mongo.client.MongoClient;
-import eg.mqzen.lib.mongo.client.MongoClients;
-import eg.mqzen.lib.mongo.client.MongoDatabase;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
+import eg.mqzen.cardinal.Cardinal;
 import eg.mqzen.cardinal.api.storage.DBEntity;
-import eg.mqzen.cardinal.api.storage.HealthStatus;
+import eg.mqzen.cardinal.api.storage.QueryBuilder;
 import eg.mqzen.cardinal.api.storage.Repository;
 import eg.mqzen.cardinal.api.storage.StorageCommand;
 import eg.mqzen.cardinal.api.storage.StorageConfig;
@@ -18,8 +14,12 @@ import eg.mqzen.cardinal.api.storage.StorageException;
 import eg.mqzen.cardinal.api.storage.StorageMetrics;
 import eg.mqzen.cardinal.api.storage.StorageObserver;
 import eg.mqzen.cardinal.api.storage.StorageType;
-import eg.mqzen.cardinal.Cardinal;
+import eg.mqzen.cardinal.storage.MultiRepositoryQueryBuilder;
 import eg.mqzen.cardinal.storage.StorageMetricsImpl;
+import org.bson.Document;
+import studio.mevera.imperat.util.TypeUtility;
+import studio.mevera.imperat.util.TypeWrap;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -113,16 +113,7 @@ public final class MongoStorageEngine implements StorageEngine {
             }
         });
     }
-    
-    @Override
-    public HealthStatus getHealthStatus() {
-        try {
-            database.runCommand(new Document("ping", 1));
-            return new HealthStatus(true, "MongoDB connection healthy", null);
-        } catch (Exception e) {
-            return new HealthStatus(false, "MongoDB connection failed", e.getMessage());
-        }
-    }
+
     
     @Override
     public StorageMetrics getMetrics() {

@@ -1,6 +1,6 @@
 package eg.mqzen.cardinal.api.storage;
 
-import eg.mqzen.lib.commands.util.TypeWrap;
+import studio.mevera.imperat.util.TypeWrap;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
@@ -36,11 +36,6 @@ public interface StorageEngine extends AutoCloseable {
      * Execute a command within a transaction asynchronously
      */
     <T> CompletableFuture<T> executeTransactionAsync(StorageCommand<T> command);
-    
-    /**
-     * Get health status of the storage engine
-     */
-    HealthStatus getHealthStatus();
     
     /**
      * Get storage metrics

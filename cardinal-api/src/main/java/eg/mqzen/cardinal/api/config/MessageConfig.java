@@ -1,16 +1,15 @@
 package eg.mqzen.cardinal.api.config;
 
-import eg.mqzen.lib.config.YamlDocument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Main interface for the message configuration API
  */
-public interface MessageConfig {
+public interface MessageConfig<C, T> {
 
-    void sendRichMessage(CommandSender sender, MessageKey key, TagResolver... resolvers);
+    void sendRichMessage(C sender, MessageKey key, TagResolver... resolvers);
 
     /**
      * Fetches a message by its key with optional tag resolvers
@@ -31,9 +30,9 @@ public interface MessageConfig {
      * Reloads the configuration from the underlying document
      */
     void reload();
-    
+
     /**
      * Gets the underlying YAML document
      */
-    YamlDocument getDocument();
+    @NotNull T getDocument();
 }

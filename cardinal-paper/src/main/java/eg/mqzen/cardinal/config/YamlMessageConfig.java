@@ -1,21 +1,23 @@
 package eg.mqzen.cardinal.config;
 
-import eg.mqzen.lib.config.YamlDocument;
+import dev.dejvokep.boostedyaml.YamlDocument;
+import eg.mqzen.cardinal.api.config.MessageConfig;
+import eg.mqzen.cardinal.api.config.MessageKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import eg.mqzen.cardinal.api.config.MessageConfig;
-import eg.mqzen.cardinal.api.config.MessageKey;
 import org.bukkit.command.CommandSender;
+import org.jspecify.annotations.NonNull;
+
 import java.io.IOException;
 import java.util.Objects;
 
 /**
  * Main implementation of the MessageConfig interface
  */
-public class YamlMessageConfig implements MessageConfig {
+public class YamlMessageConfig implements MessageConfig<CommandSender, YamlDocument> {
     private final YamlDocument document;
     private final MiniMessage miniMessage;
     private final TagResolver primaryColor, secondaryColor;
@@ -113,7 +115,8 @@ public class YamlMessageConfig implements MessageConfig {
     }
 
     @Override
-    public YamlDocument getDocument() {
+    public @NonNull YamlDocument getDocument() {
         return document;
     }
+
 }

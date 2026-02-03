@@ -1,8 +1,8 @@
 package eg.mqzen.cardinal.storage.mongo.mapping.adapter;
 
-import eg.mqzen.lib.commands.util.TypeWrap;
 import eg.mqzen.cardinal.storage.mongo.mapping.SerializationContext;
 import eg.mqzen.cardinal.storage.mongo.mapping.TypeAdapter;
+import studio.mevera.imperat.util.TypeWrap;
 
 import java.util.Set;
 

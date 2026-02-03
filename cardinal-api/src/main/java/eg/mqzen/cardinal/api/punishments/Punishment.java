@@ -1,7 +1,7 @@
 package eg.mqzen.cardinal.api.punishments;
 
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import eg.mqzen.cardinal.api.storage.DBEntity;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
